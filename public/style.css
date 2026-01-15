@@ -43,9 +43,22 @@ button:hover {
 
 .vote-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(5, 1fr); /* 🔥 přesně 5 karet v řádku */
   gap: 20px;
   margin-top: 20px;
+  padding: 10px;
+  padding-bottom: 120px; /* 🔥 místo pro footer */
+
+  @media (max-width: 900px) {
+  .vote-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 500px) {
+  .vote-grid {
+    grid-template-columns: 1fr;
+  }
+}
 }
 
 .vote-card {

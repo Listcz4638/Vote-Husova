@@ -17,7 +17,8 @@ document.getElementById("loginBtn").addEventListener("click", () => {
     { name: "Amálie Pekařová - 9.A", img: "contestant2.jpg" },
     { name: "Vít Kožich - 9.A", img: "contestant3.jpg" },
     { name: "David Kostan - 9.A", img: "contestant4.jpg" },
-    { name: "Luky Chalpníček - 9.A", img: "contestant5.jpg" }
+    { name: "Luky Chalpníček - 9.A", img: "contestant5.jpg" },
+    { name: "Jan Bernát - 9.B", img: "contestant6.jpg" },
   ];
 
   participants.forEach(p => {
