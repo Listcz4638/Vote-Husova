@@ -1,40 +1,38 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hlasování – Husova</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hlasování – ZŠ Husova</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <header>
-    <img src="logo.png" alt="Logo" class="logo">
-    <h1>Hlasování – Pěvecká soutěž Husova</h1>
+    <img src="logo.png" alt="Logo školy" class="logo" />
+    <h1>Hlasování – pěvecká soutěž</h1>
   </header>
 
   <main>
+    <!-- LOGIN -->
     <section class="login-section" id="loginSection">
       <h2>Přihlášení</h2>
       <p>Pro hlasování se přihlas přes Gmail.</p>
       <button id="loginBtn">Přihlásit se přes Gmail</button>
     </section>
 
+    <!-- VOTING -->
     <section class="vote-section hidden" id="voteSection">
       <h2>Vyber svého favorita 🎤</h2>
       <p id="classInfo"></p>
 
       <div class="vote-grid" id="voteGrid">
-        <!-- Třídy a účastníci se načtou dynamicky -->
+        <!-- karty se načtou ze script.js -->
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>© 2026 ZŠ Husova Liberec</p>
-  </footer>
-
-  <script src="script.js"></script>
-    <!-- Modal pro potvrzení hlasování -->
+  <!-- Modal potvrzení hlasu -->
   <div id="voteModal" class="modal hidden">
     <div class="modal-content">
       <h2 id="modalText"></h2>
@@ -44,5 +42,11 @@
       </div>
     </div>
   </div>
+
+  <footer>
+    <p>© 2026 ZŠ Husova Liberec</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
