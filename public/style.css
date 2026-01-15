@@ -193,3 +193,14 @@ body {
   margin-top: 5px;
   width: 100%;
 }
+
+@media (max-width: 600px) {
+  body {
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  body::-webkit-scrollbar {
+    display: none; /* Chrome / Safari */
+  }
+}
