@@ -1,12 +1,71 @@
 require("dotenv").config();
+
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 app.set("trust proxy", 1);
+const PORT = process.env.PORT || 3000;
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || "dev_secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+
+app.get("/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get("/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
+
+app.get("/me", (req, res) => {
+  if (!req.user) {
+    return res.json({ loggedIn: false });
+  }
+  res.json({ loggedIn: true, user: req.user });
+});
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.listen(PORT, () => {
+  console.log(`✅ Server běží na ${BASE_URL}`);
+});
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: `${BASE_URL}/auth/google/callback`,
+}, (accessToken, refreshToken, profile, done) => {
+  return done(null, {
+    id: profile.id,
+    displayName: profile.displayName,
+    email: profile.emails?.[0]?.value
+  });
+}));
+
 
 app.use(
   session({
