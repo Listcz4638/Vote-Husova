@@ -30,29 +30,7 @@ passport.deserializeUser((user, done) => {
 });
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
-app.get("/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-app.get("/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/" }),
-  (req, res) => {
-    res.redirect("/");
-  }
-);
-
-app.get("/me", (req, res) => {
-  if (!req.user) {
-    return res.json({ loggedIn: false });
-  }
-  res.json({ loggedIn: true, user: req.user });
-});
-
 app.use(express.static(path.join(__dirname, "public")));
-
-app.listen(PORT, () => {
-  console.log(`✅ Server běží na ${BASE_URL}`);
-});
 
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
