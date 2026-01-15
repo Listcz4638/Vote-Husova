@@ -6,13 +6,7 @@
   <title>Hlasování – ZŠ Husova</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<div id="voteConfirm" class="modal hidden">
-  <div class="modal-content">
-    <h3>Chceš opravdu hlasovat pro tuto třídu?</h3>
-    <button id="confirmYes">Ano</button>
-    <button id="confirmNo">Ne</button>
-  </div>
-</div>
+
 <body>
   <header>
     <img src="logo.png" alt="Logo školy" height="50" />
@@ -20,6 +14,15 @@
   </header>
 
   <main id="main"></main>
+
+  <!-- Modal potvrzení hlasu (musí být uvnitř body) -->
+  <div id="voteConfirm" class="modal hidden">
+    <div class="modal-content">
+      <h3>Chceš opravdu hlasovat pro tuto třídu?</h3>
+      <button id="confirmYes">Ano</button>
+      <button id="confirmNo">Ne</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
