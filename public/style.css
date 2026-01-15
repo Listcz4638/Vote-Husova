@@ -48,7 +48,7 @@ button:hover {
   margin-top: 20px;
   padding: 10px;
   padding-bottom: 120px; /* 🔥 místo pro footer */
-
+}
 @media (max-width: 1100px) {
   .vote-grid { grid-template-columns: repeat(3, 1fr); }
 }
@@ -59,7 +59,6 @@ button:hover {
 
 @media (max-width: 520px) {
   .vote-grid { grid-template-columns: 1fr; }
-}
 }
 
 .vote-card {
