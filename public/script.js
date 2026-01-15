@@ -1,5 +1,6 @@
 document.getElementById("loginBtn").addEventListener("click", () => {
-  alert("Přihlášení přes Gmail zatím testujeme ✅");
+  window.location.href = "/auth/google";
+});
 
   const classes = ["1.A","1.B","2.A","2.B","3.A","3.B","4.A","4.B","5.A","5.B","6.A","6.B","7.A","7.B","8.A","8.B","8.C","9.A","9.B"];
   const userClass = classes[Math.floor(Math.random() * classes.length)];
@@ -56,5 +57,19 @@ document.getElementById("loginBtn").addEventListener("click", () => {
         modal.classList.add("hidden");
       };
     });
-  });
-});
+  });;
+async function checkMe() {
+  const res = await fetch("/api/me");
+  const data = await res.json();
+
+  if (data.loggedIn) {
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("voteSection").classList.remove("hidden");
+    document.getElementById("classInfo").innerText =
+      `Přihlášen: ${data.user.name} (${data.user.email || "bez emailu"})`;
+    
+    // tady zavolej svou funkci, co vykreslí soutěžící
+    // nebo nech svůj současný kód na vykreslení karet
+  }
+}
+checkMe();
