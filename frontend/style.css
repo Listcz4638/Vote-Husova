@@ -1,0 +1,40 @@
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+.hidden { display: none; }
+body {
+  font-family: sans-serif;
+  background: #f5fff5;
+  color: #1b5e20;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+header {
+  background: #1b5e20;
+  color: white;
+  padding: 1em;
+}
+button {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:hover {
+  background: #43a047;
+}
