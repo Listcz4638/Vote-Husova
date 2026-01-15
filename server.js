@@ -15,8 +15,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: true,        // protože Render jede přes https
+    sameSite: "none",    // aby šly cookies v OAuth redirectu
   }
 }));
 
@@ -105,3 +105,18 @@ app.get("/logout", (req, res) => {
 });
 
 app.listen(PORT, () => console.log("Server running on port", PORT));
+
+app.get("/me", (req, res) => {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return res.json({ loggedIn: true, user: req.user });
+  }
+  res.json({ loggedIn: false });
+});
+
+app.get("/logout", (req, res) => {
+  req.logout(() => {
+    req.session?.destroy(() => {
+      res.redirect("/");
+    });
+  });
+});
