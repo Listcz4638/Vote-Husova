@@ -115,11 +115,18 @@ app.post("/api/vote", requireAuth, express.json(), (req, res) => {
 // výsledky (zamkneme “admin klíčem”)
 app.get("/api/results", (req, res) => {
   const key = req.query.key;
-  if (!process.env.ADMIN_KEY || key !== process.env.ADMIN_KEY) {
-    return res.status(403).send("Forbidden");
+
+  if (!process.env.ADMIN_KEY) {
+    return res.status(500).json({ error: "ADMIN_KEY not set on server" });
   }
+
+  if (key !== process.env.ADMIN_KEY) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
   res.json(votes);
 });
+
 
 // Výsledky hlasování (admin)
 app.get("/api/results", (req, res) => {
@@ -132,4 +139,15 @@ app.get("/api/results", (req, res) => {
   // TODO: sem dáme čtení z databáze / souboru
   // Zatím jen ukázka (prázdné výsledky):
   return res.json({ ok: true, results: {} });
+});
+app.use(express.json());
+
+app.post("/api/vote", (req, res) => {
+  // dočasně bez loginu pro test:
+  // (až bude fungovat, tak přidej ochranu)
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: "Missing name" });
+
+  votes[name] = (votes[name] || 0) + 1;
+  res.json({ ok: true, votes });
 });
