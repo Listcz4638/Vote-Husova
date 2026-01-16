@@ -95,3 +95,32 @@ app.get(/.*/, (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Server běží na portu ${PORT}`);
 });
+// jednoduché uložení do paměti (po restartu se smaže)
+// na 2 dny to často stačí, na ostrý provoz dáme DB
+const votes = {}; // { "Jan Trnovský - 9.A": 3, ... }
+
+// musíš mít přihlášení v session (passport)
+function requireAuth(req, res, next) {
+  if (req.isAuthenticated && req.isAuthenticated()) return next();
+  return res.status(401).json({ error: "Not logged in" });
+}
+
+// hlasování
+app.post("/api/vote", requireAuth, express.json(), (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: "Missing name" });
+
+  votes[name] = (votes[name] || 0) + 1;
+  return res.json({ ok: true, votes: votes[name] });
+});
+
+// výsledky (zamkneme “admin klíčem”)
+app.get("/api/results", (req, res) => {
+  const key = req.query.key;
+  if (!process.env.ADMIN_KEY || key !== process.env.ADMIN_KEY) {
+    return res.status(403).send("Forbidden");
+  }
+  res.json(votes);
+});
+
+GET /api/results
