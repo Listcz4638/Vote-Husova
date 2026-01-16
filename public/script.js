@@ -144,3 +144,16 @@ const logoutBtn = document.getElementById("logoutBtn");
 logoutBtn.addEventListener("click", () => {
   window.location.href = "/logout";
 });
+
+function showLogin() {
+  qs("loginSection")?.classList.remove("hidden");
+  qs("voteSection")?.classList.add("hidden");
+  qs("logoutBtn")?.classList.add("hidden");
+}
+
+function showVote(userText) {
+  qs("loginSection")?.classList.add("hidden");
+  qs("voteSection")?.classList.remove("hidden");
+  qs("logoutBtn")?.classList.remove("hidden");
+  qs("classInfo").innerText = userText || "";
+}
