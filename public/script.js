@@ -93,10 +93,14 @@ const participants = [
     const div = document.createElement("div");
     div.className = "vote-card";
     div.innerHTML = `
-      <img src="${p.img}" alt="${p.name}" class="contestant-img">
-      <h3>${p.name}</h3>
-      <button class="voteBtn" data-name="${p.name}">Hlasovat</button>
-    `;
+  <img src="${p.img}" alt="${p.name}" class="contestant-img">
+  <h3>${p.name}</h3>
+
+  <div class="card-actions">
+    <button class="videoBtn" data-video="${p.video}">▶ Video</button>
+    <button class="voteBtn" data-name="${p.name}">Hlasovat</button>
+  </div>
+`;
     voteGrid.appendChild(div);
   });
 
@@ -157,3 +161,22 @@ function showVote(userText) {
   qs("logoutBtn")?.classList.remove("hidden");
   qs("classInfo").innerText = userText || "";
 }
+function openVideo(url) {
+  const modal = document.getElementById("videoModal");
+  const frame = document.getElementById("videoFrame");
+
+  const id = new URL(url).searchParams.get("v");
+  frame.src = `https://www.youtube.com/embed/${id}`;
+  modal.classList.remove("hidden");
+}
+
+document.getElementById("closeVideo").onclick = () => {
+  document.getElementById("videoModal").classList.add("hidden");
+  document.getElementById("videoFrame").src = "";
+};
+
+document.querySelectorAll(".videoBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    openVideo(btn.dataset.video);
+  });
+});

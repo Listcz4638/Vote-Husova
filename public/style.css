@@ -223,3 +223,28 @@ header {
 .logout-btn:hover {
   background: rgba(0,0,0,0.35);
 }
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.videoBtn {
+  background: #555;
+}
+
+.videoBtn:hover {
+  background: #333;
+}
