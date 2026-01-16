@@ -20,9 +20,9 @@
 </table>
 
 <script>
-  const ADMIN_KEY = prompt("husovaadmin");
+  const ADMIN_KEY = prompt("Prosím zadejte admin klíč pro zobrazení výsledků:");
 
-  fetch(`/api/results?key=${ADMIN_KEY}`)
+  fetch(`/api/results?key=husovaadmin`)
     .then(res => {
       if (!res.ok) throw new Error("Přístup zamítnut");
       return res.json();
