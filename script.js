@@ -3,7 +3,7 @@ async function checkLogin() {
   const data = await res.json();
 
   if (data.loggedIn) {
-    // schovej login, ukaž voting
+    document.getElementById("logoutBtn").classList.remove("hidden");
     document.getElementById("loginSection").classList.add("hidden");
     document.getElementById("voteSection").classList.remove("hidden");
     document.getElementById("classInfo").innerText =
