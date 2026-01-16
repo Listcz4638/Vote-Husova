@@ -87,8 +87,8 @@ app.get("/logout", (req, res) => {
   });
 });
 
-// --- fallback pro SPA / refresh ---
-app.get("*", (req, res) => {
+// fallback pro refresh / přímé URL (Express 5 safe)
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
