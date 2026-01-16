@@ -120,24 +120,28 @@ const participants = [
 
       // 🔹 Potvrzení hlasu
       document.getElementById("confirmVote").onclick = async () => {
-  modal.classList.add("hidden");
+  try {
+    const r = await fetch("/api/vote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ name: jmeno }),
+    });
 
-  const res = await fetch("/api/vote", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ name: jmeno })
-  });
+    const out = await r.json().catch(() => ({}));
 
-  if (!res.ok) {
-    alert("❌ Hlas se nepovedlo odeslat. Zkus to znovu.");
-    return;
+    if (!r.ok) {
+      alert("Hlas se neodeslal: " + (out.error || r.status));
+      return;
+    }
+
+    modal.classList.add("hidden");
+    e.target.disabled = true;
+    e.target.textContent = "✅ Hlas odeslán";
+  } catch (err) {
+    alert("Chyba při odesílání hlasu");
   }
-
-  e.target.disabled = true;
-  e.target.textContent = "✅ Hlas odeslán";
 };
-
       // 🔹 Zrušení hlasování
       document.getElementById("cancelVote").onclick = () => {
         modal.classList.add("hidden");
