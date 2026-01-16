@@ -59,7 +59,7 @@ const participants = [
   {
     name: "Jan Trnovský - 9.A",
     img: "contestant1.jpg",
-    video: "https://www.youtube.com/watch?v=VIDEO_ID_1"
+    video: "https://www.youtube.com/watch?v=aHwUcmSC15M"
   },
   {
     name: "Amálie Pekařová - 9.A",
