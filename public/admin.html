@@ -9,16 +9,6 @@
 
 <h1>📊 Výsledky hlasování</h1>
 
-<table id="resultsTable">
-  <thead>
-    <tr>
-      <th>Soutěžící</th>
-      <th>Počet hlasů</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-
 <script>
 async function loadResults() {
   const key = localStorage.getItem("adminKey") || prompt("Zadej admin klíč:");
