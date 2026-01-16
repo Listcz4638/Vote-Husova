@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const votes = {}; // { "Jméno": počet }
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
@@ -95,9 +96,6 @@ app.get(/.*/, (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Server běží na portu ${PORT}`);
 });
-// jednoduché uložení do paměti (po restartu se smaže)
-// na 2 dny to často stačí, na ostrý provoz dáme DB
-const votes = {}; // { "Jan Trnovský - 9.A": 3, ... }
 
 // musíš mít přihlášení v session (passport)
 function requireAuth(req, res, next) {
