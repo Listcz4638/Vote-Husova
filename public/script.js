@@ -97,10 +97,13 @@ const participants = [
   <h3>${p.name}</h3>
 
   <div class="card-actions">
-    <button class="videoBtn" data-video="${p.video}">▶ Video</button>
+    <a href="${p.video}" target="_blank" rel="noopener noreferrer">
+      <button class="videoBtn">▶ Video</button>
+    </a>
     <button class="voteBtn" data-name="${p.name}">Hlasovat</button>
   </div>
 `;
+
     voteGrid.appendChild(div);
   });
 
@@ -160,14 +163,6 @@ function showVote(userText) {
   qs("voteSection")?.classList.remove("hidden");
   qs("logoutBtn")?.classList.remove("hidden");
   qs("classInfo").innerText = userText || "";
-}
-function openVideo(url) {
-  const modal = document.getElementById("videoModal");
-  const frame = document.getElementById("videoFrame");
-
-  const id = new URL(url).searchParams.get("v");
-  frame.src = `https://www.youtube.com/embed/${id}`;
-  modal.classList.remove("hidden");
 }
 
 document.getElementById("closeVideo").onclick = () => {
