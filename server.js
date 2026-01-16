@@ -123,4 +123,15 @@ app.get("/api/results", (req, res) => {
   res.json(votes);
 });
 
-GET /api/results
+// Výsledky hlasování (admin)
+app.get("/api/results", (req, res) => {
+  // jednoduchá ochrana klíčem (na Renderu nastav ADMIN_KEY)
+  const key = req.query.key;
+  if (process.env.ADMIN_KEY && key !== process.env.ADMIN_KEY) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
+  // TODO: sem dáme čtení z databáze / souboru
+  // Zatím jen ukázka (prázdné výsledky):
+  return res.json({ ok: true, results: {} });
+});
