@@ -6,12 +6,37 @@ const path = require("path");
 const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-
 const app = express();
-
 const PORT = process.env.PORT || 3001;
 const isProd = process.env.NODE_ENV === "production";
+const ADMIN_KEY = process.env.ADMIN_KEY;
+// middleware – admin ochrana
+function requireAdmin(req, res, next) {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (!ADMIN_KEY || key !== ADMIN_KEY) {
+    return res.status(403).json({ ok: false, error: "Forbidden" });
+  }
+  next();
+}
 
+// --- TADY MUSÍŠ MÍT ULOŽENÉ HLASY ---
+// minimálně do paměti (lepší je Sheets, ale i tohle ti rozchodí admin stránku)
+
+// ukládání hlasu
+app.post("/api/vote", (req, res) => {
+  const { name, email } = req.body;
+  if (!name) return res.status(400).json({ ok: false, error: "Missing name" });
+
+  votes.push({ name, email: email || null, time: Date.now() });
+  res.json({ ok: true });
+});
+
+// výsledky pro admina
+app.get("/api/results", requireAdmin, (req, res) => {
+  const counts = {};
+  for (const v of votes) counts[v.name] = (counts[v.name] || 0) + 1;
+  res.json({ ok: true, results: counts, total: votes.length });
+});
 app.set("trust proxy", 1);
 
 // --- SESSION (důležité pro Render/HTTPS) ---
