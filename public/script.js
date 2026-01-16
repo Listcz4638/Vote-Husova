@@ -14,6 +14,7 @@ async function checkLogin() {
   } else {
     document.getElementById("loginSection").classList.remove("hidden");
     document.getElementById("voteSection").classList.add("hidden");
+    document.getElementById("logoutBtn").classList.remove("hidden");
   }
 }
 
@@ -54,14 +55,39 @@ document.getElementById("loginBtn").addEventListener("click", () => {
   voteGrid.innerHTML = "";
 
   // ➤ Pole objektů s jménem a cestou k fotce
-  const participants = [
-    { name: "Jan Trnovský - 9.A", img: "contestant1.jpg" },
-    { name: "Amálie Pekařová - 9.A", img: "contestant2.jpg" },
-    { name: "Vít Kožich - 9.A", img: "contestant3.jpg" },
-    { name: "David Kostan - 9.A", img: "contestant4.jpg" },
-    { name: "Luky Chalpníček - 9.A", img: "contestant5.jpg" },
-    { name: "Jan Bernát - 9.B", img: "contestant6.jpg" },
-  ];
+const participants = [
+  {
+    name: "Jan Trnovský - 9.A",
+    img: "contestant1.jpg",
+    video: "https://www.youtube.com/watch?v=VIDEO_ID_1"
+  },
+  {
+    name: "Amálie Pekařová - 9.A",
+    img: "contestant2.jpg",
+    video: "https://www.youtube.com/watch?v=VIDEO_ID_2"
+  },
+  {
+    name: "Vít Kožich - 9.A",
+    img: "contestant3.jpg",
+    video: "https://www.youtube.com/watch?v=VIDEO_ID_3"
+  },
+  {
+    name: "David Kostan - 9.A",
+    img: "contestant4.jpg",
+    video: "https://www.youtube.com/watch?v=VIDEO_ID_4"
+  },
+  {
+    name: "Luky Chalpníček - 9.A",
+    img: "contestant5.jpg",
+    video: "https://www.youtube.com/watch?v=VIDEO_ID_5"
+  },
+  {
+    name: "Jan Bernát - 9.B",
+    img: "contestant6.jpg",
+    video: "https://www.youtube.com/watch?v=VIDEO_ID_6"
+  }
+];
+
 
   participants.forEach(p => {
     const div = document.createElement("div");
@@ -112,3 +138,9 @@ async function checkMe() {
   }
 }
 checkMe();
+const logoutBtn = document.getElementById("logoutBtn");
+
+// klik na odhlášení
+logoutBtn.addEventListener("click", () => {
+  window.location.href = "/logout";
+});

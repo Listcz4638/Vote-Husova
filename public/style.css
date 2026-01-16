@@ -204,3 +204,25 @@ body {
     display: none; /* Chrome / Safari */
   }
 }
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar .left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logout-btn {
+  background-color: #444;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.logout-btn:hover {
+  background-color: #222;
+}
