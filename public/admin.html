@@ -20,29 +20,43 @@
 </table>
 
 <script>
-  const ADMIN_KEY = prompt("Prosím zadejte admin klíč pro zobrazení výsledků:");
+async function loadResults() {
+  const key = localStorage.getItem("adminKey") || prompt("Zadej admin klíč:");
+  if (!key) return;
 
-  fetch(`/api/results?key=husovaadmin`)
-    .then(res => {
-      if (!res.ok) throw new Error("Přístup zamítnut");
-      return res.json();
-    })
-    .then(data => {
-      const tbody = document.querySelector("#resultsTable tbody");
-      tbody.innerHTML = "";
+  localStorage.setItem("adminKey", key);
 
-      Object.entries(data)
-        .sort((a,b) => b[1] - a[1]) // seřazení podle hlasů
-        .forEach(([name, count]) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `<td>${name}</td><td>${count}</td>`;
-          tbody.appendChild(tr);
-        });
-    })
-    .catch(err => {
-      alert("❌ Špatný admin klíč nebo chyba serveru");
-    });
+  const res = await fetch("/api/results?key=" + encodeURIComponent(key));
+  if (!res.ok) {
+    alert("❌ Špatný admin klíč nebo chyba serveru");
+    return;
+  }
+
+  const data = await res.json();
+  const results = data.results || {};
+
+  const tbody = document.getElementById("resultsBody");
+  tbody.innerHTML = "";
+
+  const entries = Object.entries(results).sort((a,b) => b[1]-a[1]);
+  for (const [name, count] of entries) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${name}</td><td>${count}</td>`;
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById("totalVotes").textContent = data.total ?? 0;
+}
+
+window.addEventListener("DOMContentLoaded", loadResults);
 </script>
-
 </body>
 </html>
+<h2>Výsledky (celkem hlasů: <span id="totalVotes">0</span>)</h2>
+
+<table>
+  <thead>
+    <tr><th>Soutěžící</th><th>Počet hlasů</th></tr>
+  </thead>
+  <tbody id="resultsBody"></tbody>
+</table>
