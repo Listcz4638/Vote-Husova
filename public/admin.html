@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Výsledky hlasování – Husova</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>📊 Výsledky hlasování</h1>
+
+<table id="resultsTable">
+  <thead>
+    <tr>
+      <th>Soutěžící</th>
+      <th>Počet hlasů</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  const ADMIN_KEY = prompt("husovaadmin");
+
+  fetch(`/api/results?key=${ADMIN_KEY}`)
+    .then(res => {
+      if (!res.ok) throw new Error("Přístup zamítnut");
+      return res.json();
+    })
+    .then(data => {
+      const tbody = document.querySelector("#resultsTable tbody");
+      tbody.innerHTML = "";
+
+      Object.entries(data)
+        .sort((a,b) => b[1] - a[1]) // seřazení podle hlasů
+        .forEach(([name, count]) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${name}</td><td>${count}</td>`;
+          tbody.appendChild(tr);
+        });
+    })
+    .catch(err => {
+      alert("❌ Špatný admin klíč nebo chyba serveru");
+    });
+</script>
+
+</body>
+</html>

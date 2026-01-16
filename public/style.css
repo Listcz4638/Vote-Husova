@@ -248,3 +248,25 @@ header {
 .videoBtn:hover {
   background: #333;
 }
+
+table {
+  margin: 30px auto;
+  border-collapse: collapse;
+  width: 80%;
+  background: white;
+}
+
+th, td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+th {
+  background-color: #1b5e20;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
