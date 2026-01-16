@@ -1,3 +1,28 @@
+async function checkLogin() {
+  const res = await fetch("/me", { credentials: "include" });
+  const data = await res.json();
+
+  if (data.loggedIn) {
+    // schovej login, ukaž voting
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("voteSection").classList.remove("hidden");
+    document.getElementById("classInfo").innerText =
+      `Přihlášen: ${data.user.displayName || data.user.email || "uživatel"}`;
+
+    // tady zavolej vykreslení soutěžících (pokud máš)
+    // renderParticipants();
+  } else {
+    document.getElementById("loginSection").classList.remove("hidden");
+    document.getElementById("voteSection").classList.add("hidden");
+  }
+}
+
+checkLogin();
+
+document.getElementById("loginBtn").addEventListener("click", () => {
+  window.location.href = "/auth/google";
+});
+
 window.addEventListener("DOMContentLoaded", () => {
   const login = document.getElementById("loginSection");
   const vote = document.getElementById("voteSection");

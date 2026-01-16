@@ -7,105 +7,58 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const app = express();
+
+const PORT = process.env.PORT || 3001;
+const isProd = process.env.NODE_ENV === "production";
+
 app.set("trust proxy", 1);
-const PORT = process.env.PORT || 3000;
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || "dev_secret",
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: true,        // protože Render jede přes https
-    sameSite: "none",    // aby šly cookies v OAuth redirectu
-  }
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
-const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
-
-app.use(express.static(path.join(__dirname, "public")));
-
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: `${BASE_URL}/auth/google/callback`,
-}, (accessToken, refreshToken, profile, done) => {
-  return done(null, {
-    id: profile.id,
-    displayName: profile.displayName,
-    email: profile.emails?.[0]?.value
-  });
-}));
-
-
+// --- SESSION (důležité pro Render/HTTPS) ---
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "change-me",
+    secret: process.env.SESSION_SECRET || "dev_secret_change_me",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true, sameSite: "lax" }, // Render = HTTPS
+    cookie: {
+      secure: isProd, // Render = true, localhost = false
+      sameSite: isProd ? "none" : "lax",
+    },
   })
 );
 
+// --- PASSPORT ---
 app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
+// --- GOOGLE STRATEGY ---
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL, 
+      // napr: https://vote-husova.onrender.com/auth/google/callback
     },
     (accessToken, refreshToken, profile, done) => {
+      // Sem si uložíš jen co chceš (email, jméno)
       const email = profile.emails?.[0]?.value || null;
       const user = {
-        googleId: profile.id,
-        name: profile.displayName,
+        id: profile.id,
+        displayName: profile.displayName,
         email,
       };
-      done(null, user);
+      return done(null, user);
     }
   )
 );
 
-// statické soubory (tvůj web)
-app.use(express.static("public"));
+// --- STATIC FRONTEND ---
+app.use(express.static(path.join(__dirname, "public")));
 
-// login
-app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-
-// callback
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/" }),
-  (req, res) => res.redirect("/")
-);
-
-// zjisti kdo je přihlášen
-app.get("/api/me", (req, res) => {
-  if (!req.user) return res.json({ loggedIn: false });
-  res.json({ loggedIn: true, user: req.user });
-});
-
-// logout
-app.get("/logout", (req, res) => {
-  req.logout(() => res.redirect("/"));
-});
-
-app.listen(PORT, () => console.log("Server running on port", PORT));
-
+// --- API: login status ---
 app.get("/me", (req, res) => {
   if (req.isAuthenticated && req.isAuthenticated()) {
     return res.json({ loggedIn: true, user: req.user });
@@ -113,10 +66,32 @@ app.get("/me", (req, res) => {
   res.json({ loggedIn: false });
 });
 
+// --- AUTH ROUTES ---
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  (req, res) => {
+    // Po úspěchu zpátky na stránku, frontend si sám načte /me
+    res.redirect("/");
+  }
+);
+
 app.get("/logout", (req, res) => {
   req.logout(() => {
-    req.session?.destroy(() => {
-      res.redirect("/");
-    });
+    req.session?.destroy(() => res.redirect("/"));
   });
+});
+
+// --- fallback pro SPA / refresh ---
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.listen(PORT, () => {
+  console.log(`✅ Server běží na portu ${PORT}`);
 });
