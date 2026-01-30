@@ -270,3 +270,20 @@ th {
 tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+
+.category-bar{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin: 10px 0 20px;
+}
+.catBtn{
+  padding:10px 14px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+}
+.catBtn.active{
+  outline: 3px solid rgba(0,0,0,0.15);
+}
