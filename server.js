@@ -1,3 +1,22 @@
+const fs = require("fs");
+const path = require("path");
+
+const VOTES_FILE = path.join(__dirname, "votes.json");
+
+function readVotes() {
+  try {
+    return JSON.parse(fs.readFileSync(VOTES_FILE, "utf8"));
+  } catch {
+    return [];
+  }
+}
+
+function writeVotes(votes) {
+  fs.writeFileSync(VOTES_FILE, JSON.stringify(votes, null, 2));
+}
+
+app.use(express.json());
+
 require("dotenv").config();
 
 const votes = {}; // { "Jméno": počet }
@@ -25,19 +44,45 @@ function requireAdmin(req, res, next) {
 // ukládání hlasu
 app.post("/api/vote", (req, res) => {
   const { name, email } = req.body;
-  if (!name) return res.status(400).json({ ok: false, error: "Missing name" });
 
-  votes.push({ name, email: email || null, time: Date.now() });
+  if (!name) {
+    return res.status(400).json({ error: "Missing name" });
+  }
+
+  const votes = readVotes();
+
+  votes.push({
+    name,
+    email: email || "nezjištěno",
+    time: new Date().toISOString()
+  });
+
+  writeVotes(votes);
+
   res.json({ ok: true });
 });
 
 // výsledky pro admina
-app.get("/api/results", requireAdmin, (req, res) => {
-  const counts = {};
-  for (const v of votes) counts[v.name] = (counts[v.name] || 0) + 1;
-  res.json({ ok: true, results: counts, total: votes.length });
+app.get("/api/results", (req, res) => {
+  const key = req.query.key;
+
+  if (!process.env.ADMIN_KEY || key !== process.env.ADMIN_KEY) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
+  const votes = readVotes();
+  const results = {};
+
+  for (const v of votes) {
+    results[v.name] = (results[v.name] || 0) + 1;
+  }
+
+  res.json({
+    ok: true,
+    total: votes.length,
+    results
+  });
 });
-app.set("trust proxy", 1);
 
 // --- SESSION (důležité pro Render/HTTPS) ---
 app.use(
