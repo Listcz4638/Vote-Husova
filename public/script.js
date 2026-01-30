@@ -8,8 +8,8 @@ const participants = [
   { name:"Jan Trnovský - 9.A", img:"contestant1.jpg", video:"https://youtu.be/aHwUcmSC15M", category:"2" },
   { name:"Amálie Pekařová - 9.A", img:"contestant2.jpg", video:"https://youtu.be/VIDEO2", category:"2" },
 
-  { name:"Někdo - 3.A", img:"contestant7.jpg", video:"https://youtu.be/VIDEO7", category:"1" },
-  { name:"Někdo - 5.B", img:"contestant8.jpg", video:"https://youtu.be/VIDEO8", category:"1" },
+  { name:"Bruno Kollmer - 1.B", img:"contestant7.jpg", video:"https://youtu.be/VIDEO7", category:"1" },
+  { name:"Jakub - 2.B", img:"contestant8.jpg", video:"https://youtube.com/shorts/BmDKMQjjGvs", category:"1" },
 ];
 
 // ===== UI show/hide =====
