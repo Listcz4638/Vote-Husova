@@ -9,41 +9,42 @@
 </head>
 
 <body>
-<header class="top-bar">
-  <div class="left">
-    <img src="logo.png" alt="Logo školy" class="logo" />
-    <h1>Hlasování – pěvecká soutěž</h1>
-  </div>
+  <header class="top-bar">
+    <div class="left">
+      <img src="logo.png" alt="Logo školy" class="logo" />
+      <h1>Hlasování – pěvecká soutěž</h1>
+    </div>
 
-  <button id="logoutBtn" class="logout-btn hidden">
-    ⎋ Odhlásit
-  </button>
-</header>
+    <button id="logoutBtn" class="logout-btn hidden" type="button">
+      ⎋ Odhlásit
+    </button>
+  </header>
 
   <main>
     <!-- LOGIN -->
     <section class="login-section" id="loginSection">
       <h2>Přihlášení</h2>
       <p>Pro hlasování se přihlas přes Gmail.</p>
-      <button id="loginBtn">Přihlásit se přes Gmail</button>
+      <button id="loginBtn" type="button">Přihlásit se přes Gmail</button>
     </section>
 
     <!-- VOTING -->
-<section class="vote-section hidden" id="voteSection">
-  <h2>Vyber svého favorita 🎤</h2>
-  <p id="classInfo"></p>
+    <section class="vote-section hidden" id="voteSection">
+      <h2>Vyber svého favorita 🎤</h2>
+      <p id="classInfo"></p>
 
-  <p id="categoryHint" class="category-hint hidden">
-    Vyber kategorii (1. nebo 2. stupeň)
-  </p>
+      <!-- 🔥 Toto bude vždy NAD tlačítky kategorií -->
+      <p id="categoryHint" class="category-hint">
+        Vyber kategorii:
+      </p>
 
-  <div class="category-row">
-    <button class="catBtn" data-cat="1">1. stupeň</button>
-    <button class="catBtn" data-cat="2">2. stupeň</button>
-  </div>
+      <div class="category-row">
+        <button class="catBtn" data-cat="1" type="button">1. stupeň</button>
+        <button class="catBtn" data-cat="2" type="button">2. stupeň</button>
+      </div>
 
-  <div class="vote-grid" id="voteGrid"></div>
-</section>
+      <div class="vote-grid" id="voteGrid"></div>
+    </section>
   </main>
 
   <!-- Modal potvrzení hlasu -->
@@ -51,8 +52,23 @@
     <div class="modal-content">
       <h2 id="modalText"></h2>
       <div class="modal-buttons">
-        <button id="confirmVote">✅ Potvrdit</button>
-        <button id="cancelVote">❌ Zrušit</button>
+        <button id="confirmVote" type="button">✅ Potvrdit</button>
+        <button id="cancelVote" type="button">❌ Zrušit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video modal -->
+  <div id="videoModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 900px;">
+      <button id="closeVideo" type="button">✖ Zavřít</button>
+
+      <div class="video-wrapper">
+        <iframe
+          id="videoFrame"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
       </div>
     </div>
   </div>
@@ -64,17 +80,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-<!-- Video modal -->
-<div id="videoModal" class="modal hidden">
-  <div class="modal-content" style="max-width: 900px;">
-    <button id="closeVideo">✖ Zavřít</button>
-
-    <div class="video-wrapper">
-      <iframe
-        id="videoFrame"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-      </iframe>
-    </div>
-  </div>
-</div>
