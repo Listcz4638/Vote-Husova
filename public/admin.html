@@ -1,53 +1,129 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Výsledky hlasování – Husova</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="/husovalogo.png" type="image/png">
+  <style>
+    /* jen drobný vzhled navíc – můžeš klidně smazat */
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .top { display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+    .badge { padding: 8px 12px; border-radius: 999px; background:#f2f2f2; font-weight:600; }
+    .cards { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+    @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
+    .card { background:#fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+    .card h2 { margin: 0 0 10px 0; }
+    table { width:100%; border-collapse: collapse; }
+    th, td { padding: 10px; border-bottom: 1px solid #eee; text-align:left; }
+    th:last-child, td:last-child { text-align:right; }
+    .winner { font-weight: 800; }
+    .muted { opacity: .75; }
+    button { cursor:pointer; }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="top">
+      <h1 style="margin:0;">📊 Výsledky hlasování</h1>
+      <div class="badge">Celkem hlasů: <span id="totalVotes">0</span></div>
+    </div>
 
-<h1>📊 Výsledky hlasování</h1>
+    <p class="muted" style="margin-top:8px;">
+      Tip: když změníš admin klíč, smaž uložený klíč v prohlížeči (LocalStorage) nebo klikni na “Změnit klíč”.
+    </p>
+
+    <div style="display:flex; gap:10px; margin: 12px 0;">
+      <button id="reloadBtn">🔄 Načíst znovu</button>
+      <button id="changeKeyBtn">🔑 Změnit klíč</button>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h2>1. stupeň</h2>
+        <p id="winner1" class="winner"></p>
+        <table>
+          <thead>
+            <tr><th>Soutěžící</th><th>Hlasy</th></tr>
+          </thead>
+          <tbody id="body1"></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>2. stupeň</h2>
+        <p id="winner2" class="winner"></p>
+        <table>
+          <thead>
+            <tr><th>Soutěžící</th><th>Hlasy</th></tr>
+          </thead>
+          <tbody id="body2"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
 <script>
-async function loadResults() {
-  const key = localStorage.getItem("adminKey") || prompt("Zadej admin klíč:");
-  if (!key) return;
+function pickWinner(resultsObj) {
+  const entries = Object.entries(resultsObj || {});
+  if (!entries.length) return null;
+  entries.sort((a,b) => b[1] - a[1]);
+  const [name, count] = entries[0];
+  return { name, count, entries };
+}
 
-  localStorage.setItem("adminKey", key);
+function renderTable(tbodyEl, entries) {
+  tbodyEl.innerHTML = "";
+  for (const [name, count] of entries) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${name}</td><td>${count}</td>`;
+    tbodyEl.appendChild(tr);
+  }
+}
+
+async function loadResults(forceAskKey = false) {
+  let key = localStorage.getItem("adminKey");
+
+  if (forceAskKey || !key) {
+    key = prompt("Zadej admin klíč:");
+    if (!key) return;
+    localStorage.setItem("adminKey", key);
+  }
 
   const res = await fetch("/api/results?key=" + encodeURIComponent(key));
   if (!res.ok) {
-    alert("❌ Špatný admin klíč nebo chyba serveru");
+    alert("❌ Špatný admin klíč nebo chyba serveru (" + res.status + ")");
     return;
   }
 
   const data = await res.json();
-  const results = data.results || {};
-
-  const tbody = document.getElementById("resultsBody");
-  tbody.innerHTML = "";
-
-  const entries = Object.entries(results).sort((a,b) => b[1]-a[1]);
-  for (const [name, count] of entries) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${name}</td><td>${count}</td>`;
-    tbody.appendChild(tr);
-  }
-
   document.getElementById("totalVotes").textContent = data.total ?? 0;
+
+  const results = data.results || {};
+  const r1 = results["1"] || {};
+  const r2 = results["2"] || {};
+
+  const w1 = pickWinner(r1);
+  const w2 = pickWinner(r2);
+
+  document.getElementById("winner1").textContent =
+    w1 ? `🏆 Vede: ${w1.name} (${w1.count})` : "Zatím žádné hlasy";
+
+  document.getElementById("winner2").textContent =
+    w2 ? `🏆 Vede: ${w2.name} (${w2.count})` : "Zatím žádné hlasy";
+
+  renderTable(document.getElementById("body1"), w1 ? w1.entries : []);
+  renderTable(document.getElementById("body2"), w2 ? w2.entries : []);
 }
 
-window.addEventListener("DOMContentLoaded", loadResults);
+document.getElementById("reloadBtn").addEventListener("click", () => loadResults(false));
+document.getElementById("changeKeyBtn").addEventListener("click", () => {
+  localStorage.removeItem("adminKey");
+  loadResults(true);
+});
+
+window.addEventListener("DOMContentLoaded", () => loadResults(false));
 </script>
 </body>
 </html>
-<h2>Výsledky (celkem hlasů: <span id="totalVotes">0</span>)</h2>
-
-<table>
-  <thead>
-    <tr><th>Soutěžící</th><th>Počet hlasů</th></tr>
-  </thead>
-  <tbody id="resultsBody"></tbody>
-</table>
