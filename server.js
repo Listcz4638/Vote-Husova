@@ -21,7 +21,6 @@ require("dotenv").config();
 
 const votes = {}; // { "Jméno": počet }
 const express = require("express");
-const path = require("path");
 const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
