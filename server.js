@@ -20,11 +20,11 @@ app.use(express.json());
 require("dotenv").config();
 
 const votes = {}; // { "Jméno": počet }
+const app = express();
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const app = express();
 const PORT = process.env.PORT || 3001;
 const isProd = process.env.NODE_ENV === "production";
 const ADMIN_KEY = process.env.ADMIN_KEY;
