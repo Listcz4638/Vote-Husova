@@ -126,7 +126,7 @@ app.post("/api/vote", requireAuth, (req, res) => {
   if (!name) return res.status(400).json({ ok: false, error: "Missing name" });
 
   const votes = readVotes();
-  votes.push({ name, email, time: new Date().toISOString() });
+  votes.push({ name, category, email, time: new Date().toISOString() });
   writeVotes(votes);
 
   res.json({ ok: true });
@@ -135,13 +135,15 @@ app.post("/api/vote", requireAuth, (req, res) => {
 // admin výsledky
 app.get("/api/results", requireAdmin, (req, res) => {
   const votes = readVotes();
-  const results = {};
+  const results = { "1": {}, "2": {} };
 
-  for (const v of votes) {
-    results[v.name] = (results[v.name] || 0) + 1;
-  }
+for (const v of votes) {
+  const cat = v.category || "unknown";
+  if (!results[cat]) results[cat] = {};
+  results[cat][v.name] = (results[cat][v.name] || 0) + 1;
+}
 
-  res.json({ ok: true, total: votes.length, results });
+res.json({ ok:true, total:votes.length, results });
 });
 
 // fallback
