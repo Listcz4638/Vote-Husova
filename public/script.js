@@ -1,34 +1,38 @@
-// ====== DATA ======
+// ===== helpers =====
+const qs = (id) => document.getElementById(id);
+
+let selectedCategory = localStorage.getItem("selectedCategory") || null;
+
+// ➤ Soutěžící (category: "1" = 1. stupeň, "2" = 2. stupeň)
 const participants = [
   { name:"Jan Trnovský - 9.A", img:"contestant1.jpg", video:"https://youtu.be/aHwUcmSC15M", category:"2" },
-  { name:"Amálie Pekařová - 9.A", img:"contestant2.jpg", video:"https://youtu.be/XXXXX", category:"2" },
+  { name:"Amálie Pekařová - 9.A", img:"contestant2.jpg", video:"https://youtu.be/VIDEO2", category:"2" },
 
-  { name:"Někdo - 3.A", img:"contestant7.jpg", video:"https://youtu.be/YYYYY", category:"1" },
-  { name:"Někdo - 5.B", img:"contestant8.jpg", video:"https://youtu.be/ZZZZZ", category:"1" },
+  { name:"Někdo - 3.A", img:"contestant7.jpg", video:"https://youtu.be/VIDEO7", category:"1" },
+  { name:"Někdo - 5.B", img:"contestant8.jpg", video:"https://youtu.be/VIDEO8", category:"1" },
 ];
 
-let selectedCategory = null; // "1" nebo "2"
-
-// ====== HELPERS ======
+// ===== UI show/hide =====
 function showLogin() {
-  document.getElementById("loginSection")?.classList.remove("hidden");
-  document.getElementById("voteSection")?.classList.add("hidden");
-  document.getElementById("logoutBtn")?.classList.add("hidden");
+  qs("loginSection").classList.remove("hidden");
+  qs("voteSection").classList.add("hidden");
+  qs("logoutBtn")?.classList.add("hidden");
 }
 
 function showVote(userText) {
-  document.getElementById("loginSection")?.classList.add("hidden");
-  document.getElementById("voteSection")?.classList.remove("hidden");
-  document.getElementById("logoutBtn")?.classList.remove("hidden");
-  document.getElementById("classInfo").innerText = userText || "";
+  qs("loginSection").classList.add("hidden");
+  qs("voteSection").classList.remove("hidden");
+  qs("logoutBtn")?.classList.remove("hidden");
+  qs("classInfo").innerText = userText || "";
 }
 
+// ===== render =====
 function renderCards() {
-  const voteGrid = document.getElementById("voteGrid");
+  const voteGrid = qs("voteGrid");
   voteGrid.innerHTML = "";
 
   if (!selectedCategory) {
-    voteGrid.innerHTML = `<p style="text-align:center;">Vyber kategorii (1. nebo 2. stupeň) 👆</p>`;
+    voteGrid.innerHTML = `<p style="text-align:center; font-weight:600;">Vyber kategorii (1. nebo 2. stupeň).</p>`;
     return;
   }
 
@@ -43,100 +47,87 @@ function renderCards() {
 
       <div class="card-actions">
         <a href="${p.video}" target="_blank" rel="noopener noreferrer">
-          <button type="button" class="videoBtn">▶ Video</button>
+          <button class="videoBtn" type="button">▶ Video</button>
         </a>
-        <button type="button" class="voteBtn" data-name="${p.name}">Hlasovat</button>
+        <button class="voteBtn" type="button" data-name="${p.name}">Hlasovat</button>
       </div>
     `;
     voteGrid.appendChild(div);
   });
 
-  // hlasování -> modal
-  document.querySelectorAll(".voteBtn").forEach(btn => {
+  // vote listeners (po renderu)
+  voteGrid.querySelectorAll(".voteBtn").forEach(btn => {
     btn.addEventListener("click", () => openVoteModal(btn.dataset.name, btn));
+  });
+
+  // zvýraznění aktivní kategorie
+  document.querySelectorAll(".catBtn").forEach(b => {
+    b.classList.toggle("active", b.dataset.cat === selectedCategory);
   });
 }
 
-function openVoteModal(name, btnEl) {
-  const modal = document.getElementById("voteModal");
-  const modalText = document.getElementById("modalText");
-  modalText.textContent = `Chceš dát hlas soutěžícímu ${name}?`;
+// ===== modal vote =====
+function openVoteModal(name, buttonEl) {
+  const modal = qs("voteModal");
+  qs("modalText").textContent = `Chceš dát hlas soutěžícímu ${name}?`;
   modal.classList.remove("hidden");
 
-  document.getElementById("confirmVote").onclick = async () => {
-    await submitVote(name, btnEl);
-    modal.classList.add("hidden");
+  qs("confirmVote").onclick = async () => {
+    try {
+      const r = await fetch("/api/vote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, category: selectedCategory }),
+      });
+
+      const out = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        alert("Hlas se neodeslal: " + (out.error || r.status));
+        return;
+      }
+
+      modal.classList.add("hidden");
+      buttonEl.disabled = true;
+      buttonEl.textContent = "✅ Hlas odeslán";
+    } catch (e) {
+      alert("Chyba při odesílání hlasu");
+    }
   };
 
-  document.getElementById("cancelVote").onclick = () => {
-    modal.classList.add("hidden");
-  };
+  qs("cancelVote").onclick = () => modal.classList.add("hidden");
 }
 
-async function submitVote(name, btnEl) {
-  if (!selectedCategory) {
-    alert("Nejdřív vyber kategorii (1. nebo 2. stupeň).");
-    return;
-  }
-
-  try {
-    const res = await fetch("/api/vote", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ name, category: selectedCategory }),
-    });
-
-    const data = await res.json().catch(() => ({}));
-
-    if (!res.ok) {
-      alert("Hlas se neodeslal: " + (data.error || res.status));
-      return;
-    }
-
-    // UI změna
-    if (btnEl) {
-      btnEl.disabled = true;
-      btnEl.textContent = "✅ Hlas odeslán";
-    } else {
-      alert("✅ Hlas odeslán!");
-    }
-  } catch (e) {
-    alert("Chyba při odesílání hlasu.");
-  }
-}
-
-// ====== LOGIN CHECK ======
+// ===== login check =====
 async function checkLogin() {
   const res = await fetch("/me", { credentials: "include" });
   const data = await res.json();
 
   if (data.loggedIn) {
     showVote(`Přihlášen: ${data.user.displayName || data.user.email || "uživatel"}`);
-    renderCards(); // zobrazí text “Vyber kategorii...”
+    renderCards();
   } else {
     showLogin();
   }
 }
 
-// ====== INIT ======
+// ===== init =====
 window.addEventListener("DOMContentLoaded", () => {
-  // login tlačítko
-  document.getElementById("loginBtn")?.addEventListener("click", () => {
+  // login
+  qs("loginBtn").addEventListener("click", () => {
     window.location.href = "/auth/google";
   });
 
-  // logout tlačítko
-  document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  // logout
+  qs("logoutBtn")?.addEventListener("click", () => {
     window.location.href = "/logout";
   });
 
-  // kategorie tlačítka
+  // kategorie (musí existovat tlačítka .catBtn)
   document.querySelectorAll(".catBtn").forEach(btn => {
     btn.addEventListener("click", () => {
       selectedCategory = btn.dataset.cat; // "1" nebo "2"
-      document.querySelectorAll(".catBtn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      localStorage.setItem("selectedCategory", selectedCategory);
       renderCards();
     });
   });
