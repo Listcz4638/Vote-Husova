@@ -8,7 +8,7 @@ const participants = [
   { name:"Jakub Svoboda, Hynek Dolejš - 9.A", img:"contestant1.jpg", video:"https://youtu.be/VIDEO1", category:"2" },
 
   { name:"Bruno Kollmer - 1.B", img:"contestant7.jpg", video:"https://youtu.be/VIDEO2", category:"1" },
-  { name:"Jakub - 2.B", img:"contestant8.jpg", video:"https://youtube.com/shorts/BmDKMQjjGvs", category:"1" },
+  { name:"Jakub Skibko (Matylda Vacková) - 2.B", img:"contestant8.jpg", video:"https://youtube.com/shorts/BmDKMQjjGvs", category:"1" },
 ];
 
 // ===== UI show/hide =====
