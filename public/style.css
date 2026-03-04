@@ -300,3 +300,20 @@ tr:nth-child(even) {
   gap: 12px;
   margin-bottom: 20px;
 }
+
+.how-btn {
+  background: linear-gradient(135deg, #4CAF50, #2e7d32);
+  color: white;
+  padding: 14px 28px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.how-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
