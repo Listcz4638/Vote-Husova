@@ -6,10 +6,10 @@ let selectedCategory = localStorage.getItem("selectedCategory") || null;
 // ➤ Soutěžící (category: "1" = 1. stupeň, "2" = 2. stupeň)
 const participants = [
   { name:"Antonín Fulka - 6.A", img:"contestant1.jpg", video:"https://youtube.com/shorts/Qv1WAwBhOz8", category:"2" },
-  { name:"Jakub Svoboda, Hynek Dolejš - 9.A", img:"contestant2.jpg", video:"", category:"2" },
+  { name:"Jakub Svoboda, Hynek Dolejš - 9.A (video ještě nezasláno)", img:"contestant2.jpg", video:"", category:"2" },
   { name:"Elizaveta Bilonog - 9.B", img:"contestant3.jpg", video:"https://files.fm/f/cqh2cyeyyh", category:"2" },
 
-  { name:"Bruno Kollmer - 1.B", img:"contestant7.jpg", video:"", category:"1" },
+  { name:"Bruno Kollmer - 1.B", img:"contestant7.jpg", video:"https://youtube.com/shorts/Y8YbjGoD1O0", category:"1" },
   { name:"Jakub Skibko (Matylda Vacková) - 2.B", img:"contestant8.jpg", video:"https://youtube.com/shorts/BmDKMQjjGvs", category:"1" },
 ];
 
@@ -135,6 +135,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   checkLogin();
 });
+
 
 
 
