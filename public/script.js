@@ -12,6 +12,8 @@ const participants = [
 
   { name:"Bruno Kollmer - 1.B", img:"contestant7.jpg", video:"https://youtube.com/shorts/Y8YbjGoD1O0", category:"1" },
   { name:"Jakub Skibko (Matylda Vacková) - 2.B", img:"contestant8.jpg", video:"https://youtube.com/shorts/BmDKMQjjGvs", category:"1" },
+  { name:"Jirka Šidlof (Babetka Břenková) - 3.B", img:"contestant8.jpg", video:"https://youtube.com/shorts/HLvSJE1K-t8", category:"1" },
+  { name:"Viky Farská (Zorka Burešová) - 3.A", img:"contestant8.jpg", video:"https://youtu.be/fvPJ0ESqaic", category:"1" },
 ];
 
 // ===== UI show/hide =====
