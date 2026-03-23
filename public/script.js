@@ -5,6 +5,7 @@ let selectedCategory = localStorage.getItem("selectedCategory") || null;
 
 // ➤ Soutěžící (category: "1" = 1. stupeň, "2" = 2. stupeň)
 const participants = [
+  { name:"František Škvor - 5.B", img:"contestant1.jpg", video:"https://youtube.com/shorts/zJAz8KskgRA", category:"2" },
   { name:"Antonín Fulka - 6.A", img:"contestant1.jpg", video:"https://youtube.com/shorts/Qv1WAwBhOz8", category:"2" },
   { name:"Jakub Svoboda, Hynek Dolejš - 9.A (video ještě nezasláno)", img:"contestant2.jpg", video:"", category:"2" },
   { name:"Elizaveta Bilonog - 9.B", img:"contestant3.jpg", video:"https://files.fm/f/surn24qk2s", category:"2" },
