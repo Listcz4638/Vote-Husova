@@ -5,15 +5,9 @@ let selectedCategory = localStorage.getItem("selectedCategory") || null;
 
 // ➤ Soutěžící (category: "1" = 1. stupeň, "2" = 2. stupeň)
 const participants = [
-  { name:"X - 5.A", img:"contestant8.jpg", video:"", category:"2" },
   { name:"František Škvor - 5.B", img:"contestant9.jpg", video:"https://files.fm/f/tma86yndjc", category:"2" },
   { name:"Antonín Fulka - 6.A", img:"contestant10.jpg", video:"https://youtube.com/shorts/Qv1WAwBhOz8", category:"2" },
-  { name:"X - 6.B", img:"contestant11.jpg", video:"", category:"2" },
-  { name:"X - 7.A", img:"contestant12.jpg", video:"", category:"2" },
-  { name:"X - 7.B", img:"contestant13.jpg", video:"", category:"2" },
   { name:"Tereza Kohoutová - 8.A", img:"contestant14.jpg", video:"https://files.fm/f/7kp34z9q3j", category:"2" },
-  { name:"X - 8.B", img:"contestant15.jpg", video:"", category:"2" },
-  { name:"X - 8.C", img:"contestant16.jpg", video:"", category:"2" },
   { name:"Jakub Svoboda, Hynek Dolejš - 9.A (video ještě nezasláno)", img:"contestant17.jpg", video:"", category:"2" },
   { name:"Elizaveta Bilonog - 9.B", img:"contestant18.jpg", video:"https://files.fm/f/surn24qk2s", category:"2" },
 
@@ -23,7 +17,6 @@ const participants = [
   { name:"Jakub Skibko (Matylda Vacková) - 2.B", img:"contestant4.jpg", video:"https://youtube.com/shorts/BmDKMQjjGvs", category:"1" },
   { name:"Viky Farská (Zorka Burešová) - 3.A", img:"contestant5.jpg", video:"https://youtu.be/fvPJ0ESqaic", category:"1" },
   { name:"Jirka Šidlof (Babetka Břenková) - 3.B", img:"contestant5.jpg", video:"https://youtube.com/shorts/HLvSJE1K-t8", category:"1" },
-  { name:"X - 4.A", img:"contestant6.jpg", video:"", category:"1" },
   { name:"Andrea Maděrová - 4.B", img:"contestant7.jpg", video:"https://youtu.be/n_hrKDtXdeI", category:"1" },
 ];
 
