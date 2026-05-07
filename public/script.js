@@ -9,7 +9,7 @@ const participants = [
   { name:"Antonín Fulka - 6.A", img:"contestant9.png", video:"https://youtube.com/shorts/Qv1WAwBhOz8", category:"2" },
   { name:"Michaela Mohrová (video ještě nezasláno) - 6.B", img:"contestant10.png", video:"", category:"2" },
   { name:"Johana Janďourková (video ještě nezasláno) - 7.A", img:"contestant11.png", video:"", category:"2" },
-  { name:"Anežka Hospodářová (video ještě nezasláno) - 7.B", img:"contestant12.png", video:"", category:"2" },
+  { name:"Anežka Hospodářová - 7.B", img:"contestant12.png", video:"https://youtu.be/lAz6fr5hEd4", category:"2" },
   { name:"Tereza Kohoutová - 8.A", img:"contestant13.png", video:"https://files.fm/f/7kp34z9q3j", category:"2" },
   { name:"Bára Hladíková (video ještě nezasláno) - 8.B", img:"contestant14.png", video:"", category:"2" },
   { name:"Jakub Svoboda, Hynek Dolejš - 9.A (video ještě nezasláno)", img:"contestant15.png", video:"", category:"2" },
