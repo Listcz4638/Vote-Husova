@@ -11,7 +11,7 @@ const participants = [
   { name:"Johana Janďourková (video ještě nezasláno) - 7.A", img:"contestant11.png", video:"", category:"2" },
   { name:"Anežka Hospodářová - 7.B", img:"contestant12.png", video:"https://youtu.be/lAz6fr5hEd4", category:"2" },
   { name:"Tereza Kohoutová - 8.A", img:"contestant13.png", video:"https://files.fm/f/7kp34z9q3j", category:"2" },
-  { name:"Bára Hladíková (video ještě nezasláno) - 8.B", img:"contestant14.png", video:"", category:"2" },
+  { name:"Bára Hladíková - 8.B", img:"contestant14.png", video:"https://youtube.com/shorts/cwMWSvM82K8", category:"2" },
   { name:"Jakub Svoboda, Hynek Dolejš - 9.A (video ještě nezasláno)", img:"contestant15.png", video:"", category:"2" },
   { name:"Elizaveta Bilonog - 9.B", img:"contestant16.png", video:"https://files.fm/f/surn24qk2s", category:"2" },
 
