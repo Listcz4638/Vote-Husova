@@ -382,5 +382,16 @@ tr:nth-child(even) {
   box-shadow: 0 6px 18px rgba(0,0,0,0.3);
 }
 
+.song-title {
+  margin-top: 10px;
+  font-size: 17px;
+  font-weight: bold;
+  color: #1b5e20;
+}
 
+.song-artist {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+}
 
