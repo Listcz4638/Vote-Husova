@@ -57,6 +57,9 @@ function renderCards() {
       <img src="${p.img}" alt="${p.name}" class="contestant-img">
       <h3>${p.name}</h3>
 
+      <p class="song-title">🎵 ${p.song}</p>
+<p class="song-artist">👤 ${p.artist}</p>
+
       <div class="card-actions">
         <a href="${p.video}" target="_blank" rel="noopener noreferrer">
           <button class="videoBtn" type="button">▶ Video</button>
