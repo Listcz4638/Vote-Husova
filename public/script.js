@@ -5,23 +5,23 @@ let selectedCategory = localStorage.getItem("selectedCategory") || null;
 
 // ➤ Soutěžící (category: "1" = 1. stupeň, "2" = 2. stupeň)
 const participants = [
-  { name:"František Škvor - 5.B", img:"contestant8.png", video:"https://files.fm/f/tma86yndjc", category:"2" },
-  { name:"Antonín Fulka - 6.A", img:"contestant9.png", video:"https://youtube.com/shorts/Qv1WAwBhOz8", category:"2" },
-  { name:"Michaela Mohrová (video ještě nezasláno) - 6.B", img:"contestant10.png", video:"", category:"2" },
-  { name:"Johana Janďourková (video ještě nezasláno) - 7.A", img:"contestant11.png", video:"", category:"2" },
-  { name:"Anežka Hospodářová - 7.B", img:"contestant12.png", video:"https://youtu.be/lAz6fr5hEd4", category:"2" },
-  { name:"Tereza Kohoutová - 8.A", img:"contestant13.png", video:"https://files.fm/f/7kp34z9q3j", category:"2" },
-  { name:"Bára Hladíková - 8.B", img:"contestant14.png", video:"https://files.fm/f/kt9bpvjvbt", category:"2" },
-  { name:"Jakub Svoboda, Hynek Dolejš - 9.A (video ještě nezasláno)", img:"contestant15.png", video:"", category:"2" },
-  { name:"Elizaveta Bilonog - 9.B", img:"contestant16.png", video:"https://files.fm/f/surn24qk2s", category:"2" },
+  { name:"František Škvor - 5.B", img:"contestant8.png", video:"https://files.fm/f/tma86yndjc", category:"2", song: "Jdem zpátky do lesů", artist: "Pavel Žalman Lohonka" },
+  { name:"Antonín Fulka - 6.A", img:"contestant9.png", video:"https://youtube.com/shorts/Qv1WAwBhOz8", category:"2", song: "Cesta", artist: "Kryštof" },
+  { name:"Michaela Mohrová (video ještě nezasláno) - 6.B", img:"contestant10.png", video:"", category:"2", song: "X", artist: "X" },
+  { name:"Johana Janďourková (video ještě nezasláno) - 7.A", img:"contestant11.png", video:"", category:"2", song: "X", artist: "X" },
+  { name:"Anežka Hospodářová - 7.B", img:"contestant12.png", video:"https://youtu.be/lAz6fr5hEd4", category:"2", song: "Větře větříčku", artist: "S Čerty nejsou žerty" },
+  { name:"Tereza Kohoutová - 8.A", img:"contestant13.png", video:"https://files.fm/f/7kp34z9q3j", category:"2", song: "From the start", artist: "Laufey" },
+  { name:"Bára Hladíková - 8.B", img:"contestant14.png", video:"https://files.fm/f/kt9bpvjvbt", category:"2", song: "Cups (Pitch Perfect’s “When I’m Gone”)", artist: "Anna Kendrick" },
+  { name:"Jakub Svoboda, Hynek Dolejš - 9.A (video ještě nezasláno)", img:"contestant15.png", video:"", category:"2", song: "X", artist: "X" },
+  { name:"Elizaveta Bilonog - 9.B", img:"contestant16.png", video:"https://files.fm/f/surn24qk2s", category:"2", song: "Запальничка", artist: "Shmiska" },
 
-  { name:"Antonie Zenková - 1.A", img:"contestant1.png", video:"https://youtu.be/ed_T1FzmZUo", category:"1" },
-  { name:"Bruno Kollmer - 1.B", img:"contestant2.png", video:"https://youtube.com/shorts/Y8YbjGoD1O0", category:"1" },
-  { name:"Roman Sobotka - 2.A", img:"contestant3.png", video:"https://youtu.be/-MKcZOjm2XA", category:"1" },
-  { name:"Jakub Skibko (Matylda Vacková) - 2.B", img:"contestant4.png", video:"https://youtube.com/shorts/BmDKMQjjGvs", category:"1" },
-  { name:"Viky Farská (Zorka Burešová) - 3.A", img:"contestant5.png", video:"https://youtu.be/fvPJ0ESqaic", category:"1" },
-  { name:"Jirka Šidlof (Babetka Břenková) - 3.B", img:"contestant6.png", video:"https://youtube.com/shorts/HLvSJE1K-t8", category:"1" },
-  { name:"Andrea Maděrová - 4.B", img:"contestant7.png", video:"https://youtu.be/n_hrKDtXdeI", category:"1" },
+  { name:"Antonie Zenková - 1.A", img:"contestant1.png", video:"https://youtu.be/ed_T1FzmZUo", category:"1", song: "Prosinec", artist: "Jaroslav Uhlíř" },
+  { name:"Bruno Kollmer - 1.B", img:"contestant2.png", video:"https://youtube.com/shorts/Y8YbjGoD1O0", category:"1", song: "Příšera", artist: "Trampské perly" },
+  { name:"Roman Sobotka - 2.A", img:"contestant3.png", video:"https://youtu.be/-MKcZOjm2XA", category:"1", song: "Na ostří nože", artist: "Ewa Farna" },
+  { name:"Jakub Skibko (Matylda Vacková) - 2.B", img:"contestant4.png", video:"https://youtube.com/shorts/BmDKMQjjGvs", category:"1", song: "Štědrý večer", artist: "Neznámý" },
+  { name:"Viky Farská (Zorka Burešová) - 3.A", img:"contestant5.png", video:"https://youtu.be/fvPJ0ESqaic", category:"1", song: "Malý princ", artist: "Eva Burešová" },
+  { name:"Jirka Šidlof (Babetka Břenková) - 3.B", img:"contestant6.png", video:"https://youtube.com/shorts/HLvSJE1K-t8", category:"1", song: "Mám styl Čendy", artist: "Karel Gott" },
+  { name:"Andrea Maděrová - 4.B", img:"contestant7.png", video:"https://youtu.be/n_hrKDtXdeI", category:"1", song: "Mám styl Čendy", artist: "Karel Gott" },
 ];
 
 // ===== UI show/hide =====
