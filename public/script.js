@@ -7,12 +7,10 @@ let selectedCategory = localStorage.getItem("selectedCategory") || null;
 const participants = [
   { name:"František Škvor - 5.B", img:"contestant8.png", video:"https://files.fm/f/tma86yndjc", category:"2", song: "Jdem zpátky do lesů", artist: "Pavel Žalman Lohonka" },
   { name:"Antonín Fulka - 6.A", img:"contestant9.png", video:"https://youtube.com/shorts/Qv1WAwBhOz8", category:"2", song: "Cesta", artist: "Kryštof" },
-  { name:"Michaela Mohrová (video ještě nezasláno) - 6.B", img:"contestant10.png", video:"", category:"2", song: "X", artist: "X" },
-  { name:"Johana Janďourková (video ještě nezasláno) - 7.A", img:"contestant11.png", video:"", category:"2", song: "X", artist: "X" },
   { name:"Anežka Hospodářová - 7.B", img:"contestant12.png", video:"https://youtu.be/lAz6fr5hEd4", category:"2", song: "Větře větříčku", artist: "S Čerty nejsou žerty" },
   { name:"Tereza Kohoutová - 8.A", img:"contestant13.png", video:"https://files.fm/f/7kp34z9q3j", category:"2", song: "From the start", artist: "Laufey" },
   { name:"Bára Hladíková - 8.B", img:"contestant14.png", video:"https://files.fm/f/kt9bpvjvbt", category:"2", song: "Cups (Pitch Perfect’s “When I’m Gone”)", artist: "Anna Kendrick" },
-  { name:"Jakub Svoboda, Hynek Dolejš - 9.A (video ještě nezasláno)", img:"contestant15.png", video:"", category:"2", song: "X", artist: "X" },
+  { name:"Jakub Svoboda, Hynek Dolejš - 9.A", img:"contestant15.png", video:"https://www.youtube.com/shorts/2_VecoOk-d0", category:"2", song: "Pepa & Teta", artist: "Jakub Svoboda & Hynek Dolejš" },
   { name:"Elizaveta Bilonog - 9.B", img:"contestant16.png", video:"https://files.fm/f/surn24qk2s", category:"2", song: "Запальничка", artist: "Shmiska" },
 
   { name:"Antonie Zenková - 1.A", img:"contestant1.png", video:"https://youtu.be/ed_T1FzmZUo", category:"1", song: "Prosinec", artist: "Jaroslav Uhlíř" },
