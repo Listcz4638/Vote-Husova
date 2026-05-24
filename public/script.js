@@ -48,6 +48,11 @@ function renderCards() {
     return;
   }
 
+  ${votingOpen
+  ? `<button class="voteBtn" type="button" data-name="${p.name}">Hlasovat</button>`
+  : `<button disabled>Hlasování ukončeno</button>`
+}
+
   const filtered = participants.filter(p => p.category === selectedCategory);
 
   filtered.forEach(p => {
@@ -69,6 +74,8 @@ function renderCards() {
     `;
     voteGrid.appendChild(div);
   });
+
+  const votingOpen = false;
 
   // vote listeners (po renderu)
   voteGrid.querySelectorAll(".voteBtn").forEach(btn => {
