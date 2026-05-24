@@ -395,3 +395,12 @@ tr:nth-child(even) {
   margin-bottom: 15px;
 }
 
+.voting-closed{
+  margin-top: 12px;
+  padding: 10px;
+  background: #e53935;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+}
