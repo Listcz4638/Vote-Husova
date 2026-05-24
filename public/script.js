@@ -47,12 +47,6 @@ function renderCards() {
     voteGrid.innerHTML = `<p style="text-align:center; font-weight:600;">Vyber kategorii (1. nebo 2. stupeň).</p>`;
     return;
   }
-  
-  const votingOpen = false;
-  ${votingOpen
-  ? `<button class="voteBtn" type="button" data-name="${p.name}">Hlasovat</button>`
-  : `<button disabled>Hlasování ukončeno</button>`
-}
 
   const filtered = participants.filter(p => p.category === selectedCategory);
 
@@ -66,12 +60,15 @@ function renderCards() {
       <p class="song-title">🎵 ${p.song}</p>
 <p class="song-artist">👤 ${p.artist}</p>
 
-      <div class="card-actions">
-        <a href="${p.video}" target="_blank" rel="noopener noreferrer">
-          <button class="videoBtn" type="button">▶ Video</button>
-        </a>
-        <button class="voteBtn" type="button" data-name="${p.name}">Hlasovat</button>
-      </div>
+<div class="card-actions">
+  <a href="${p.video}" target="_blank" rel="noopener noreferrer">
+    <button class="videoBtn" type="button">▶ Video</button>
+  </a>
+</div>
+
+<div class="voting-closed">
+  🔒 Hlasování bylo ukončeno
+</div>
     `;
     voteGrid.appendChild(div);
   });
