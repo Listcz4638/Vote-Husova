@@ -404,3 +404,18 @@ tr:nth-child(even) {
   font-weight: bold;
   text-align: center;
 }
+
+.youtube-btn{
+  background:#ff0000;
+  color:white;
+  text-decoration:none;
+  padding:10px 16px;
+  border-radius:10px;
+  font-weight:600;
+  transition:0.2s;
+}
+
+.youtube-btn:hover{
+  transform:translateY(-2px);
+  opacity:0.9;
+}
