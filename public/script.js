@@ -47,7 +47,8 @@ function renderCards() {
     voteGrid.innerHTML = `<p style="text-align:center; font-weight:600;">Vyber kategorii (1. nebo 2. stupeň).</p>`;
     return;
   }
-
+  
+  const votingOpen = false;
   ${votingOpen
   ? `<button class="voteBtn" type="button" data-name="${p.name}">Hlasovat</button>`
   : `<button disabled>Hlasování ukončeno</button>`
@@ -74,8 +75,6 @@ function renderCards() {
     `;
     voteGrid.appendChild(div);
   });
-
-  const votingOpen = false;
 
   // vote listeners (po renderu)
   voteGrid.querySelectorAll(".voteBtn").forEach(btn => {
