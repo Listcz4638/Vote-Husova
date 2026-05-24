@@ -74,9 +74,13 @@ function renderCards() {
   });
 
   // vote listeners (po renderu)
-  voteGrid.querySelectorAll(".voteBtn").forEach(btn => {
+const voteButtons = voteGrid.querySelectorAll(".voteBtn");
+
+if (voteButtons.length) {
+  voteButtons.forEach(btn => {
     btn.addEventListener("click", () => openVoteModal(btn.dataset.name, btn));
   });
+}
 
   // zvýraznění aktivní kategorie
   document.querySelectorAll(".catBtn").forEach(b => {
