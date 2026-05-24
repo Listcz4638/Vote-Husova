@@ -200,8 +200,8 @@ body {
     display: none; /* Chrome / Safari */
   }
 }
-header {
-  position: relative; /* důležité pro umístění tlačítka */
+header:not(.top-bar) {
+  position: relative;
 }
 
 .logout-btn {
@@ -334,49 +334,55 @@ tr:nth-child(even) {
 
 .how-btn:hover {
   transform: scale(1.08);
+}
 
- .top-bar {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* ===== HEADER ===== */
 
-    background: #156b1a;
-    padding: 20px 30px;
+.top-bar {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: #156b1a;
+  padding: 20px 30px;
 }
 
 /* LEVÁ STRANA */
 .left {
-    flex: 1;
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
 }
 
 /* STŘED */
 .center {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
 }
 
 .logo {
-    width: 25px;
-    height: auto;
-    display: block;
-    margin: 0 auto 10px;
+  width: 80px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
 }
 
 .center h1 {
-    margin: 0;
-    color: white;
-    font-size: 2rem;
+  margin: 0;
+  color: white;
+  font-size: 2rem;
 }
 
 /* PRAVÁ STRANA */
 .right {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
 }
   
 .plan-btn {
