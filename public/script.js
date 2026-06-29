@@ -9,7 +9,7 @@ const participants = [
   { name:"Antonín Fulka - 6.A", img:"contestant9.png", video:"https://youtu.be/xcDOwpogRT4", category:"2", song: "Cesta", artist: "Kryštof" },
   { name:"Anežka Hospodářová - 7.B", img:"contestant12.png", video:"https://youtu.be/QBrwBdnpM00", category:"2", song: "Větře větříčku", artist: "S Čerty nejsou žerty" },
   { name:"Bára Hladíková - 8.B", img:"contestant14.png", video:"https://youtu.be/LE6VWiZW0Sk", category:"2", song: "Cups (Pitch Perfect’s “When I’m Gone”)", artist: "Anna Kendrick" },
-  { name:"Jakub Svoboda, Hynek Dolejš - 9.A", img:"contestant15.png", video:"https://www.youtube.com/shorts/2_VecoOk-d0", category:"2", song: "Pepa & Teta", artist: "Jakub Svoboda & Hynek Dolejš" },
+  { name:"Jakub Svoboda, Hynek Dolejš - 9.A", img:"contestant15.png", video:"https://youtu.be/GRnpKfQjzRQ", category:"2", song: "Pepa & Teta", artist: "Jakub Svoboda & Hynek Dolejš" },
   
   { name:"Bruno Kollmer - 1.B", img:"contestant2.png", video:"https://youtu.be/NxWaAOeuWJ4", category:"1", song: "Příšera", artist: "Trampské perly" },
   { name:"Roman Sobotka - 2.A", img:"contestant3.png", video:"https://www.youtube.com/watch?v=0y-Ul9RYTSY", category:"1", song: "Na ostří nože", artist: "Ewa Farna" },
