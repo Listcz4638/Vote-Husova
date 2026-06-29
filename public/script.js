@@ -8,7 +8,7 @@ const participants = [
   { name:"František Škvor - 5.B", img:"contestant8.png", video:"https://youtu.be/Es-eDRNidU4", category:"2", song: "Jdem zpátky do lesů", artist: "Pavel Žalman Lohonka" },
   { name:"Antonín Fulka - 6.A", img:"contestant9.png", video:"https://youtu.be/xcDOwpogRT4", category:"2", song: "Cesta", artist: "Kryštof" },
   { name:"Anežka Hospodářová - 7.B", img:"contestant12.png", video:"https://youtu.be/QBrwBdnpM00", category:"2", song: "Větře větříčku", artist: "S Čerty nejsou žerty" },
-  { name:"Bára Hladíková - 8.B", img:"contestant14.png", video:"https://files.fm/f/kt9bpvjvbt", category:"2", song: "Cups (Pitch Perfect’s “When I’m Gone”)", artist: "Anna Kendrick" },
+  { name:"Bára Hladíková - 8.B", img:"contestant14.png", video:"https://youtu.be/LE6VWiZW0Sk", category:"2", song: "Cups (Pitch Perfect’s “When I’m Gone”)", artist: "Anna Kendrick" },
   { name:"Jakub Svoboda, Hynek Dolejš - 9.A", img:"contestant15.png", video:"https://www.youtube.com/shorts/2_VecoOk-d0", category:"2", song: "Pepa & Teta", artist: "Jakub Svoboda & Hynek Dolejš" },
   
   { name:"Bruno Kollmer - 1.B", img:"contestant2.png", video:"https://youtu.be/NxWaAOeuWJ4", category:"1", song: "Příšera", artist: "Trampské perly" },
