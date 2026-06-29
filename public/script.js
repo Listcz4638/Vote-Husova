@@ -11,7 +11,7 @@ const participants = [
   { name:"Bára Hladíková - 8.B", img:"contestant14.png", video:"https://files.fm/f/kt9bpvjvbt", category:"2", song: "Cups (Pitch Perfect’s “When I’m Gone”)", artist: "Anna Kendrick" },
   { name:"Jakub Svoboda, Hynek Dolejš - 9.A", img:"contestant15.png", video:"https://www.youtube.com/shorts/2_VecoOk-d0", category:"2", song: "Pepa & Teta", artist: "Jakub Svoboda & Hynek Dolejš" },
   
-  { name:"Bruno Kollmer - 1.B", img:"contestant2.png", video:"https://youtube.com/shorts/Y8YbjGoD1O0", category:"1", song: "Příšera", artist: "Trampské perly" },
+  { name:"Bruno Kollmer - 1.B", img:"contestant2.png", video:"https://youtu.be/NxWaAOeuWJ4", category:"1", song: "Příšera", artist: "Trampské perly" },
   { name:"Roman Sobotka - 2.A", img:"contestant3.png", video:"https://youtu.be/-MKcZOjm2XA", category:"1", song: "Na ostří nože", artist: "Ewa Farna" },
   { name:"Viky Farská - 3.A", img:"contestant5.png", video:"https://youtu.be/fvPJ0ESqaic", category:"1", song: "Malý princ", artist: "Eva Burešová" },
   { name:"Jirka Šidlof - 3.B", img:"contestant6.png", video:"https://youtube.com/shorts/HLvSJE1K-t8", category:"1", song: "Mám styl Čendy", artist: "Karel Gott" },
