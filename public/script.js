@@ -2,6 +2,17 @@
 const qs = (id) => document.getElementById(id);
 
 let selectedCategory = localStorage.getItem("selectedCategory") || null;
+let votingOpen = false;
+
+async function loadVotingStatus() {
+  try {
+    const res = await fetch("/api/voting-status");
+    const data = await res.json();
+    votingOpen = !!data.open;
+  } catch (e) {
+    votingOpen = false;
+  }
+}
 
 // ➤ Soutěžící (category: "1" = 1. stupeň, "2" = 2. stupeň)
 const participants = [
@@ -60,9 +71,10 @@ function renderCards() {
   </a>
 </div>
 
-<div class="voting-closed">
-  🔒 Hlasování bylo ukončeno
-</div>
+${votingOpen
+  ? `<button class="voteBtn" type="button" data-name="${p.name}">🗳 Hlasovat</button>`
+  : `<div class="voting-closed">🔒 Hlasování bylo ukončeno</div>`
+}
     `;
     voteGrid.appendChild(div);
   });
@@ -121,6 +133,7 @@ async function checkLogin() {
 
   if (data.loggedIn) {
     showVote(`Přihlášen: ${data.user.displayName || data.user.email || "uživatel"}`);
+    await loadVotingStatus();
     renderCards();
   } else {
     showLogin();
@@ -150,10 +163,3 @@ window.addEventListener("DOMContentLoaded", () => {
 
   checkLogin();
 });
-
-
-
-
-
-
-
