@@ -119,6 +119,66 @@ function needSupabase(res) {
   return null;
 }
 
+// ===== VOTING STATUS =====
+// Stav hlasování je uložený v Supabase tabulce "settings" (jeden řádek, id = 1).
+// SQL pro vytvoření tabulky je v poznámce na konci souboru.
+
+async function getVotingOpen() {
+  const { data, error } = await supabase
+    .from("settings")
+    .select("voting_open")
+    .eq("id", 1)
+    .single();
+
+  if (error) {
+    console.error("SUPABASE STATUS READ ERROR:", error);
+    return false; // pro jistotu radši "zavřeno", když se stav nepodaří zjistit
+  }
+  return !!data?.voting_open;
+}
+
+// veřejné – frontend potřebuje vědět, jestli má zobrazit tlačítko Hlasovat
+app.get("/api/voting-status", async (req, res) => {
+  const err = needSupabase(res);
+  if (err) return;
+
+  try {
+    const open = await getVotingOpen();
+    return res.json({ ok: true, open });
+  } catch (e) {
+    console.error("STATUS ERROR:", e);
+    return res.status(500).json({ ok: false, error: "Server error" });
+  }
+});
+
+// jen admin – přepnutí stavu
+app.post("/api/voting-status", requireAdmin, async (req, res) => {
+  const err = needSupabase(res);
+  if (err) return;
+
+  const { open } = req.body;
+  if (typeof open !== "boolean") {
+    return res.status(400).json({ ok: false, error: "Missing boolean 'open' in body" });
+  }
+
+  try {
+    const { error } = await supabase
+      .from("settings")
+      .update({ voting_open: open })
+      .eq("id", 1);
+
+    if (error) {
+      console.error("SUPABASE STATUS UPDATE ERROR:", error);
+      return res.status(500).json({ ok: false, error: "Database error" });
+    }
+
+    return res.json({ ok: true, open });
+  } catch (e) {
+    console.error("STATUS UPDATE ERROR:", e);
+    return res.status(500).json({ ok: false, error: "Server error" });
+  }
+});
+
 // ===== VOTE =====
 // 1 email = 1 hlas v kategorii (řeší DB unique index)
 app.post("/api/vote", requireAuth, async (req, res) => {
@@ -133,6 +193,11 @@ app.post("/api/vote", requireAuth, async (req, res) => {
     }
     if (!["1", "2"].includes(String(category))) {
       return res.status(400).json({ ok: false, error: "Bad category" });
+    }
+
+    const votingOpen = await getVotingOpen();
+    if (!votingOpen) {
+      return res.status(403).json({ ok: false, error: "Hlasování je momentálně uzavřené." });
     }
 
     const voterEmail = req.user?.email;
@@ -188,7 +253,9 @@ app.get("/api/results", requireAdmin, async (req, res) => {
       results[cat][name] = (results[cat][name] || 0) + 1;
     }
 
-    return res.json({ ok: true, total: data.length, results });
+    const votingOpen = await getVotingOpen();
+
+    return res.json({ ok: true, total: data.length, results, votingOpen });
   } catch (e) {
     console.error("RESULTS ERROR:", e);
     return res.status(500).json({ ok: false, error: "Server error" });
@@ -201,3 +268,19 @@ app.get(/.*/, (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`✅ Server běží na portu ${PORT}`));
+
+/*
+===== SQL MIGRACE (spusť jednou v Supabase → SQL editor) =====
+
+create table if not exists settings (
+  id smallint primary key,
+  voting_open boolean not null default false
+);
+
+insert into settings (id, voting_open)
+values (1, false)
+on conflict (id) do nothing;
+
+Server přistupuje k Supabase přes SERVICE ROLE klíč, takže obchází RLS –
+žádné dodatečné policy pro tabulku "settings" není potřeba.
+*/
