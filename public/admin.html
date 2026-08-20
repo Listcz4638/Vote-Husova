@@ -34,9 +34,10 @@
       Tip: když změníš admin klíč, smaž uložený klíč v prohlížeči (LocalStorage) nebo klikni na “Změnit klíč”.
     </p>
 
-    <div style="display:flex; gap:10px; margin: 12px 0;">
+    <div style="display:flex; gap:10px; margin: 12px 0; align-items:center; flex-wrap:wrap;">
       <button id="reloadBtn">🔄 Načíst znovu</button>
       <button id="changeKeyBtn">🔑 Změnit klíč</button>
+      <button id="toggleVotingBtn" style="border:none; border-radius:8px; padding:10px 16px; font-weight:700; color:#fff;">⏳ Načítám stav…</button>
     </div>
 
     <div class="cards">
@@ -100,6 +101,13 @@ async function loadResults(forceAskKey = false) {
   const data = await res.json();
   document.getElementById("totalVotes").textContent = data.total ?? 0;
 
+  // NOTE: předpokládám, že /api/results vrací i "votingOpen" (true/false).
+  // Pokud tvůj backend posílá jiný název pole, uprav řádek níž.
+  if (typeof data.votingOpen === "boolean") {
+    votingOpen = data.votingOpen;
+    paintToggleBtn();
+  }
+
   const results = data.results || {};
   const r1 = results["1"] || {};
   const r2 = results["2"] || {};
@@ -117,13 +125,79 @@ async function loadResults(forceAskKey = false) {
   renderTable(document.getElementById("body2"), w2 ? w2.entries : []);
 }
 
+function getKey(forceAskKey = false) {
+  let key = localStorage.getItem("adminKey");
+  if (forceAskKey || !key) {
+    key = prompt("Zadej admin klíč:");
+    if (!key) return null;
+    localStorage.setItem("adminKey", key);
+  }
+  return key;
+}
+
+let votingOpen = null; // true = otevřené, false = zavřené, null = zatím nevíme
+
+function paintToggleBtn() {
+  const btn = document.getElementById("toggleVotingBtn");
+  if (votingOpen === null) {
+    btn.textContent = "⏳ Načítám stav…";
+    btn.style.background = "#999";
+    btn.disabled = true;
+    return;
+  }
+  btn.disabled = false;
+  if (votingOpen) {
+    btn.textContent = "🔴 Zavřít hlasování";
+    btn.style.background = "#e53935";
+  } else {
+    btn.textContent = "🟢 Otevřít hlasování";
+    btn.style.background = "#2b8a3e";
+  }
+}
+
+async function toggleVoting() {
+  const key = getKey();
+  if (!key) return;
+
+  const btn = document.getElementById("toggleVotingBtn");
+  btn.disabled = true;
+  const wantOpen = !votingOpen;
+
+  btn.textContent = wantOpen ? "⏳ Otevírám…" : "⏳ Zavírám…";
+
+  try {
+    const res = await fetch("/api/voting-status?key=" + encodeURIComponent(key), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ open: wantOpen }),
+    });
+
+    if (!res.ok) {
+      alert("❌ Nepodařilo se změnit stav hlasování (" + res.status + ")");
+      paintToggleBtn();
+      return;
+    }
+
+    votingOpen = wantOpen;
+    paintToggleBtn();
+    await loadResults(false);
+  } catch (err) {
+    alert("❌ Chyba při komunikaci se serverem: " + err.message);
+    paintToggleBtn();
+  }
+}
+
 document.getElementById("reloadBtn").addEventListener("click", () => loadResults(false));
 document.getElementById("changeKeyBtn").addEventListener("click", () => {
   localStorage.removeItem("adminKey");
   loadResults(true);
 });
+document.getElementById("toggleVotingBtn").addEventListener("click", toggleVoting);
 
-window.addEventListener("DOMContentLoaded", () => loadResults(false));
+window.addEventListener("DOMContentLoaded", () => {
+  paintToggleBtn();
+  loadResults(false);
+});
 </script>
 </body>
 </html>
