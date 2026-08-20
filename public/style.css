@@ -100,7 +100,8 @@ a:focus-visible {
   justify-content: space-between;
   align-items: center;
   background: linear-gradient(135deg, var(--forest) 0%, var(--forest-deep) 100%);
-  padding: 40px 30px 48px;
+  padding: 24px 30px 34px;
+  min-height: 210px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   overflow: hidden;
 }
@@ -124,7 +125,7 @@ a:focus-visible {
 
 .center {
   position: absolute;
-  top: 2px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -395,6 +396,7 @@ a:focus-visible {
 
 .card-actions {
   display: flex;
+  justify-content: center;
   gap: 8px;
   margin-top: 10px;
   width: 100%;
