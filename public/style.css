@@ -279,6 +279,61 @@ a:focus-visible {
   width: 100%;
 }
 
+/* ===== VOTING STATUS BADGE (login card) ===== */
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cream);
+  border: 1.5px solid rgba(27,94,32,0.12);
+  padding: 8px 16px 8px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--forest-deep);
+  margin-bottom: 18px;
+}
+
+.pulse-dot {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--leaf);
+  display: inline-block;
+}
+
+.pulse-dot::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: var(--leaf);
+  opacity: 0.5;
+  animation: pulse 1.8s ease-out infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.6); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* zavřeno = červená LED */
+.live-badge.closed {
+  border-color: rgba(229,57,53,0.25);
+}
+.live-badge.closed .pulse-dot,
+.live-badge.closed .pulse-dot::before {
+  background: var(--red);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot::before { animation: none; }
+}
+
 /* ===== VOTING ===== */
 
 .vote-section h2 {
