@@ -100,8 +100,18 @@ a:focus-visible {
   justify-content: space-between;
   align-items: center;
   background: linear-gradient(135deg, var(--forest) 0%, var(--forest-deep) 100%);
-  padding: 28px 30px 34px;
+  padding: 40px 30px 48px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.top-bar::after{
+  content:'';
+  position:absolute;
+  bottom:-1px; left:0; right:0;
+  height:30px;
+  background: var(--cream);
+  clip-path: ellipse(60% 100% at 50% 100%);
 }
 
 .left {
@@ -114,6 +124,7 @@ a:focus-visible {
 
 .center {
   position: absolute;
+  top: 2px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -138,6 +149,7 @@ a:focus-visible {
   font-size: 1.9rem;
   font-weight: 700;
   letter-spacing: 0.2px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .right {
@@ -361,15 +373,6 @@ a:focus-visible {
   transform: translateY(-4px) scale(1.03);
   box-shadow: 0 18px 30px -14px rgba(27,94,32,0.35);
 }
-
-/* reorder: image -> video button -> name/song text -> vote/locked button */
-.vote-card .contestant-img { order: 1; }
-.vote-card .card-actions { order: 2; margin-top: 2px; margin-bottom: 12px; }
-.vote-card h3 { order: 3; }
-.vote-card .song-title { order: 4; }
-.vote-card .song-artist { order: 5; }
-.vote-card .voting-closed { order: 6; }
-.vote-card > button { order: 6; }
 
 .contestant-img {
   width: 100%;
