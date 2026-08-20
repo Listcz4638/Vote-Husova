@@ -14,6 +14,20 @@ async function loadVotingStatus() {
   }
 }
 
+function paintLoginBadge() {
+  const badge = qs("votingStatusBadge");
+  const text = qs("votingStatusText");
+  if (!badge || !text) return;
+
+  if (votingOpen) {
+    badge.classList.remove("closed");
+    text.textContent = "Hlasování je otevřené";
+  } else {
+    badge.classList.add("closed");
+    text.textContent = "Hlasování je momentálně uzavřené";
+  }
+}
+
 // ➤ Soutěžící (category: "1" = 1. stupeň, "2" = 2. stupeň)
 const participants = [
   { name:"František Škvor - 5.B", img:"contestant8.png", video:"https://youtu.be/Es-eDRNidU4", category:"2", song: "Jdem zpátky do lesů", artist: "Pavel Žalman Lohonka" },
@@ -131,9 +145,11 @@ async function checkLogin() {
   const res = await fetch("/me", { credentials: "include" });
   const data = await res.json();
 
+  await loadVotingStatus();
+  paintLoginBadge();
+
   if (data.loggedIn) {
     showVote(`Přihlášen: ${data.user.displayName || data.user.email || "uživatel"}`);
-    await loadVotingStatus();
     renderCards();
   } else {
     showLogin();
