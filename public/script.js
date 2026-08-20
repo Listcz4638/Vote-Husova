@@ -69,9 +69,10 @@ function renderCards() {
 
   const filtered = participants.filter(p => p.category === selectedCategory);
 
-  filtered.forEach(p => {
+  filtered.forEach((p, i) => {
     const div = document.createElement("div");
     div.className = "vote-card";
+    div.style.animationDelay = `${i * 60}ms`;
     div.innerHTML = `
       <img src="${p.img}" alt="${p.name}" class="contestant-img">
       <h3>${p.name}</h3>
