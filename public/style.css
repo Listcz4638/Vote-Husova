@@ -32,25 +32,24 @@ h1, h2, h3, h4 {
   font-family: "Baloo 2", sans-serif;
 }
 
-/* tiled background art, layered with soft brand-colored gradients */
+/* tiled background art, kept clean and crisp */
 body {
   background-image:
-    linear-gradient(180deg, rgba(238,247,240,0.55) 0%, rgba(238,247,240,0.9) 100%),
-    radial-gradient(700px 420px at 10% 8%, rgba(43,138,62,0.10), transparent 60%),
-    radial-gradient(700px 420px at 90% 30%, rgba(255,201,74,0.16), transparent 60%),
+    radial-gradient(900px 500px at 12% 0%, rgba(43,138,62,0.06), transparent 60%),
+    radial-gradient(900px 500px at 88% 20%, rgba(255,201,74,0.10), transparent 60%),
     url('tile.png');
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
-  background-position: top left, top left, top left, top left;
-  background-size: cover, cover, cover, 300px auto;
-  background-color: #ffffff;
-  background-attachment: fixed, fixed, fixed, scroll;
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-position: top left, top left, top left;
+  background-size: cover, cover, 280px auto;
+  background-color: #fdfdfb;
+  background-attachment: fixed, fixed, scroll;
 }
 
 @media (max-width: 600px) {
   body {
     overflow-y: auto;
     scrollbar-width: none;
-    background-attachment: scroll, scroll, scroll, scroll;
+    background-attachment: scroll, scroll, scroll;
   }
   body::-webkit-scrollbar {
     display: none;
@@ -101,19 +100,8 @@ a:focus-visible {
   justify-content: space-between;
   align-items: center;
   background: linear-gradient(135deg, var(--forest) 0%, var(--forest-deep) 100%);
-  padding: 28px 30px 46px;
+  padding: 28px 30px 34px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  overflow: hidden;
-}
-
-.top-bar::after{
-  content:'';
-  position:absolute;
-  bottom:-1px; left:0; right:0;
-  height:34px;
-  background: var(--cream);
-  clip-path: ellipse(60% 100% at 50% 100%);
-  opacity: 0.9;
 }
 
 .left {
@@ -133,14 +121,14 @@ a:focus-visible {
 }
 
 .logo {
-  width: 72px;
-  height: 72px;
+  width: 96px;
+  height: 96px;
   object-fit: contain;
   display: block;
   margin: 0 auto 10px;
   background: white;
   border-radius: 50%;
-  padding: 12px;
+  padding: 8px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.28);
 }
 
@@ -373,6 +361,15 @@ a:focus-visible {
   transform: translateY(-4px) scale(1.03);
   box-shadow: 0 18px 30px -14px rgba(27,94,32,0.35);
 }
+
+/* reorder: image -> video button -> name/song text -> vote/locked button */
+.vote-card .contestant-img { order: 1; }
+.vote-card .card-actions { order: 2; margin-top: 2px; margin-bottom: 12px; }
+.vote-card h3 { order: 3; }
+.vote-card .song-title { order: 4; }
+.vote-card .song-artist { order: 5; }
+.vote-card .voting-closed { order: 6; }
+.vote-card > button { order: 6; }
 
 .contestant-img {
   width: 100%;
