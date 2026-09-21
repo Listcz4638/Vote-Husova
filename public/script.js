@@ -30,17 +30,7 @@ function paintLoginBadge() {
 
 // ➤ Soutěžící (category: "1" = 1. stupeň, "2" = 2. stupeň)
 const participants = [
-  { name:"František Škvor - 5.B", img:"contestant8.png", video:"https://youtu.be/Es-eDRNidU4", category:"2", song: "Jdem zpátky do lesů", artist: "Pavel Žalman Lohonka" },
-  { name:"Antonín Fulka - 6.A", img:"contestant9.png", video:"https://youtu.be/xcDOwpogRT4", category:"2", song: "Cesta", artist: "Kryštof" },
-  { name:"Anežka Hospodářová - 7.B", img:"contestant12.png", video:"https://youtu.be/QBrwBdnpM00", category:"2", song: "Větře větříčku", artist: "S Čerty nejsou žerty" },
-  { name:"Bára Hladíková - 8.B", img:"contestant14.png", video:"https://youtu.be/LE6VWiZW0Sk", category:"2", song: "Cups (Pitch Perfect’s “When I’m Gone”)", artist: "Anna Kendrick" },
-  { name:"Jakub Svoboda, Hynek Dolejš - 9.A", img:"contestant15.png", video:"https://youtu.be/GRnpKfQjzRQ", category:"2", song: "Pepa & Teta", artist: "Jakub Svoboda & Hynek Dolejš" },
-  
-  { name:"Bruno Kollmer - 1.B", img:"contestant2.png", video:"https://youtu.be/NxWaAOeuWJ4", category:"1", song: "Příšera", artist: "Trampské perly" },
-  { name:"Roman Sobotka - 2.A", img:"contestant3.png", video:"https://www.youtube.com/watch?v=0y-Ul9RYTSY", category:"1", song: "Na ostří nože", artist: "Ewa Farna" },
-  { name:"Viky Farská - 3.A", img:"contestant5.png", video:"https://youtu.be/NyZihcd-Yj0", category:"1", song: "Malý princ", artist: "Eva Burešová" },
-  { name:"Jirka Šidlof - 3.B", img:"contestant6.png", video:"https://youtu.be/BnHfiDu_ZTQ", category:"1", song: "Mám styl Čendy", artist: "Karel Gott" },
-  { name:"Andrea Maděrová - 4.B", img:"contestant7.png", video:"https://youtu.be/ZMAYXMeQ-Fo", category:"1", song: "Mám styl Čendy", artist: "Karel Gott" },
+  { name:"", img:"", video:"", category:"", song: "", artist: "" },
 ];
 
 // ===== UI show/hide =====
