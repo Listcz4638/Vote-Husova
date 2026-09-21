@@ -58,9 +58,32 @@ function showVote(userText) {
 }
 
 // ===== render =====
+// zvýraznění aktivní kategorie
+function highlightCategory() {
+  document.querySelectorAll(".catBtn").forEach(b => {
+    b.classList.toggle("active", b.dataset.cat === selectedCategory);
+  });
+}
+
+function noContestantsMessage(text) {
+  return `<p class="no-contestants" style="text-align:center; font-weight:600; grid-column:1 / -1;">${text}</p>`;
+}
+
 function renderCards() {
   const voteGrid = qs("voteGrid");
   voteGrid.innerHTML = "";
+
+  // úplně bez soutěžících -> schováme výběr kategorie a ukážeme informaci
+  const hasAny = participants.length > 0;
+  const hint = qs("categoryHint");
+  const catRow = document.querySelector(".category-row");
+  if (hint) hint.style.display = hasAny ? "" : "none";
+  if (catRow) catRow.style.display = hasAny ? "" : "none";
+
+  if (!hasAny) {
+    voteGrid.innerHTML = noContestantsMessage("Momentálně nejsou přihlášeni žádní soutěžící. 🎤");
+    return;
+  }
 
   if (!selectedCategory) {
     voteGrid.innerHTML = `<p style="text-align:center; font-weight:600;">Vyber kategorii (1. nebo 2. stupeň).</p>`;
@@ -68,6 +91,13 @@ function renderCards() {
   }
 
   const filtered = participants.filter(p => p.category === selectedCategory);
+
+  // v této kategorii nikdo není
+  if (filtered.length === 0) {
+    highlightCategory();
+    voteGrid.innerHTML = noContestantsMessage("V této kategorii momentálně nejsou žádní soutěžící.");
+    return;
+  }
 
   filtered.forEach((p, i) => {
     const div = document.createElement("div");
@@ -103,10 +133,7 @@ if (voteButtons.length) {
   });
 }
 
-  // zvýraznění aktivní kategorie
-  document.querySelectorAll(".catBtn").forEach(b => {
-    b.classList.toggle("active", b.dataset.cat === selectedCategory);
-  });
+  highlightCategory();
 }
 
 // ===== modal vote =====
