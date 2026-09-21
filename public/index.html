@@ -77,6 +77,114 @@
 
       <div class="vote-grid" id="voteGrid"></div>
     </section>
+
+    <!-- VÍTĚZOVÉ 2026 -->
+    <section class="winners" aria-labelledby="winners-title">
+      <h2 id="winners-title">🏆 Vítězná videa 2026</h2>
+
+      <div class="winners-grid">
+        <article class="winner-card">
+          <div class="video-frame">
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/NyZihcd-Yj0"
+              title="Vítězka 1. stupně 2026"
+              loading="lazy"
+              allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+          </div>
+          <h3>Výherkyně 1. stupně</h3>
+        </article>
+
+        <article class="winner-card">
+          <div class="video-frame">
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/xcDOwpogRT4"
+              title="Vítěz 2. stupně 2026"
+              loading="lazy"
+              allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+          </div>
+          <h3>Výherce 2. stupně</h3>
+        </article>
+      </div>
+    </section>
+
+    <style>
+      .winners {
+        width: 100%;
+        max-width: 980px;
+        margin: 48px auto;
+        box-sizing: border-box;
+        padding: 0 20px;
+      }
+
+      .winners h2 {
+        text-align: center;
+        color: #1f4a1f;
+        font-size: 1.9rem;
+        margin: 0 0 24px;
+      }
+
+      .winners-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+      }
+
+      .winner-card {
+        position: relative;
+        background: #fff;
+        border-radius: 24px;
+        padding: 20px 20px 22px;
+        box-shadow: 0 10px 30px rgba(31, 74, 31, 0.12);
+      }
+
+      /* zelenožlutý proužek nahoře – stejný jako na přihlašovací kartě */
+      .winner-card::before {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 64px;
+        height: 5px;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #6cbf4d, #e3c34a);
+      }
+
+      .video-frame {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #14301a;
+      }
+
+      .video-frame iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .winner-card h3 {
+        margin: 16px 0 0;
+        text-align: center;
+        color: #1f4a1f;
+        font-size: 1.15rem;
+      }
+
+      /* mobil: videa pod sebou */
+      @media (max-width: 720px) {
+        .winners-grid {
+          grid-template-columns: 1fr;
+        }
+        .winners h2 {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
   </main>
 
   <!-- Modal potvrzení hlasu -->
