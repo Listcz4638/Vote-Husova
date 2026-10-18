@@ -68,6 +68,68 @@ passport.use(
   )
 );
 
+// ===== MAINTENANCE MODE =====
+// Příznak "maintenance" je v Supabase tabulce "settings" (řádek id = 1).
+// Když je zapnutý, veřejnost vidí stránku údržby (HTTP 503), ale admin dál funguje.
+let maintenanceCache = { value: false, ts: 0 };
+const MAINT_TTL_MS = 5000; // jak dlouho si pamatujeme stav, aby se DB nedotazovala při každém požadavku
+
+async function getMaintenance() {
+  if (!supabase) return false;
+  if (Date.now() - maintenanceCache.ts < MAINT_TTL_MS) return maintenanceCache.value;
+
+  const { data, error } = await supabase
+    .from("settings")
+    .select("maintenance")
+    .eq("id", 1)
+    .single();
+
+  if (error) {
+    // když se stav nepodaří zjistit, web radši NEzamykáme – necháme poslední známou hodnotu
+    console.error("SUPABASE MAINTENANCE READ ERROR:", error);
+    maintenanceCache.ts = Date.now();
+    return maintenanceCache.value;
+  }
+
+  maintenanceCache = { value: !!data?.maintenance, ts: Date.now() };
+  return maintenanceCache.value;
+}
+
+// cesty, které fungují i během údržby (admin + soubory pro stránku údržby)
+const MAINT_ALLOWED = new Set([
+  "/admin.html",
+  "/api/results",
+  "/api/maintenance",
+  "/api/voting-status",
+  "/udrzba.html",
+  "/style.css",
+  "/logo.png",
+  "/tile.png",
+  "/husovalogo.png",
+  "/favicon.ico",
+]);
+
+app.use(async (req, res, next) => {
+  try {
+    if (MAINT_ALLOWED.has(req.path)) return next();
+    if (!(await getMaintenance())) return next();
+
+    res.set("Retry-After", "300");
+
+    if (req.path.startsWith("/api/") || req.path === "/me") {
+      return res.status(503).json({
+        ok: false,
+        maintenance: true,
+        error: "Probíhá údržba, zkus to prosím za chvíli.",
+      });
+    }
+    return res.status(503).sendFile(path.join(__dirname, "public", "udrzba.html"));
+  } catch (e) {
+    console.error("MAINTENANCE MIDDLEWARE ERROR:", e);
+    return next();
+  }
+});
+
 // ===== STATIC =====
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -179,6 +241,45 @@ app.post("/api/voting-status", requireAdmin, async (req, res) => {
   }
 });
 
+// ===== MAINTENANCE API =====
+// veřejné – stránka údržby podle toho pozná, že se má sama obnovit
+app.get("/api/maintenance", async (req, res) => {
+  try {
+    return res.json({ ok: true, maintenance: await getMaintenance() });
+  } catch (e) {
+    return res.json({ ok: true, maintenance: false });
+  }
+});
+
+// jen admin – zapnutí/vypnutí údržby
+app.post("/api/maintenance", requireAdmin, async (req, res) => {
+  const err = needSupabase(res);
+  if (err) return;
+
+  const { enabled } = req.body;
+  if (typeof enabled !== "boolean") {
+    return res.status(400).json({ ok: false, error: "Missing boolean 'enabled' in body" });
+  }
+
+  try {
+    const { error } = await supabase
+      .from("settings")
+      .update({ maintenance: enabled })
+      .eq("id", 1);
+
+    if (error) {
+      console.error("SUPABASE MAINTENANCE UPDATE ERROR:", error);
+      return res.status(500).json({ ok: false, error: "Database error (je v tabulce settings sloupec 'maintenance'?)" });
+    }
+
+    maintenanceCache = { value: enabled, ts: Date.now() }; // projeví se hned
+    return res.json({ ok: true, maintenance: enabled });
+  } catch (e) {
+    console.error("MAINTENANCE UPDATE ERROR:", e);
+    return res.status(500).json({ ok: false, error: "Server error" });
+  }
+});
+
 // ===== VOTE =====
 // 1 email = 1 hlas v kategorii (řeší DB unique index)
 app.post("/api/vote", requireAuth, async (req, res) => {
@@ -254,8 +355,9 @@ app.get("/api/results", requireAdmin, async (req, res) => {
     }
 
     const votingOpen = await getVotingOpen();
+    const maintenance = await getMaintenance();
 
-    return res.json({ ok: true, total: data.length, results, votingOpen });
+    return res.json({ ok: true, total: data.length, results, votingOpen, maintenance });
   } catch (e) {
     console.error("RESULTS ERROR:", e);
     return res.status(500).json({ ok: false, error: "Server error" });
@@ -280,6 +382,9 @@ create table if not exists settings (
 insert into settings (id, voting_open)
 values (1, false)
 on conflict (id) do nothing;
+
+-- údržba (spusť taky jednou):
+alter table settings add column if not exists maintenance boolean not null default false;
 
 Server přistupuje k Supabase přes SERVICE ROLE klíč, takže obchází RLS –
 žádné dodatečné policy pro tabulku "settings" není potřeba.
