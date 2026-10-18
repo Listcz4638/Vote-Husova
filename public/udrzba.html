@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Údržba – Hlasování ZŠ Husova</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="/husovalogo.png" type="image/png" />
+</head>
+<body>
+  <header class="top-bar">
+    <div class="left"></div>
+    <div class="center">
+      <img src="/logo.png" alt="Logo školy" class="logo">
+      <h1>Hlasování – Talent Husovky!</h1>
+    </div>
+    <div class="right"></div>
+  </header>
+
+  <main>
+    <section class="login-section">
+      <span class="live-badge closed">
+        <span class="pulse-dot"></span>
+        <span>Probíhá údržba</span>
+      </span>
+      <h2>Za chvíli jsme zpět</h2>
+      <p>Právě web vylepšujeme. Zkuste to prosím za pár minut.</p>
+      <button type="button" onclick="location.href='/'">Zkusit znovu</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 ZŠ Husova Liberec</p>
+  </footer>
+
+  <script>
+    // jakmile údržba skončí, stránka se sama vrátí na hlavní web
+    setInterval(async () => {
+      try {
+        const r = await fetch("/api/maintenance", { cache: "no-store" });
+        const d = await r.json();
+        if (d.ok && d.maintenance === false) location.href = "/";
+      } catch (e) {}
+    }, 20000);
+  </script>
+</body>
+</html>

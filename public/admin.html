@@ -38,6 +38,7 @@
       <button id="reloadBtn">🔄 Načíst znovu</button>
       <button id="changeKeyBtn">🔑 Změnit klíč</button>
       <button id="toggleVotingBtn" style="border:none; border-radius:8px; padding:10px 16px; font-weight:700; color:#fff;">⏳ Načítám stav…</button>
+      <button id="toggleMaintBtn" style="border:none; border-radius:8px; padding:10px 16px; font-weight:700; color:#fff;">⏳ Načítám údržbu…</button>
     </div>
 
     <div class="cards">
@@ -106,6 +107,11 @@ async function loadResults(forceAskKey = false) {
   if (typeof data.votingOpen === "boolean") {
     votingOpen = data.votingOpen;
     paintToggleBtn();
+  }
+
+  if (typeof data.maintenance === "boolean") {
+    maintenance = data.maintenance;
+    paintMaintBtn();
   }
 
   const results = data.results || {};
@@ -187,6 +193,61 @@ async function toggleVoting() {
   }
 }
 
+let maintenance = null; // true = web je v údržbě, false = běží normálně, null = zatím nevíme
+
+function paintMaintBtn() {
+  const btn = document.getElementById("toggleMaintBtn");
+  if (maintenance === null) {
+    btn.textContent = "⏳ Načítám údržbu…";
+    btn.style.background = "#999";
+    btn.disabled = true;
+    return;
+  }
+  btn.disabled = false;
+  if (maintenance) {
+    btn.textContent = "✅ Vypnout údržbu (web je teď zavřený)";
+    btn.style.background = "#2b8a3e";
+  } else {
+    btn.textContent = "🛠 Zapnout údržbu";
+    btn.style.background = "#6b4e16";
+  }
+}
+
+async function toggleMaintenance() {
+  const key = getKey();
+  if (!key) return;
+
+  const wantOn = !maintenance;
+  if (wantOn && !confirm("Zapnout údržbu?\n\nVeřejnost uvidí stránku údržby a nebude se moct přihlásit ani hlasovat. Admin zůstane funkční.")) {
+    return;
+  }
+
+  const btn = document.getElementById("toggleMaintBtn");
+  btn.disabled = true;
+  btn.textContent = wantOn ? "⏳ Zapínám…" : "⏳ Vypínám…";
+
+  try {
+    const res = await fetch("/api/maintenance?key=" + encodeURIComponent(key), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enabled: wantOn }),
+    });
+
+    if (!res.ok) {
+      alert("❌ Nepodařilo se změnit údržbu (" + res.status + ")");
+      paintMaintBtn();
+      return;
+    }
+
+    maintenance = wantOn;
+    paintMaintBtn();
+  } catch (err) {
+    alert("❌ Chyba při komunikaci se serverem: " + err.message);
+    paintMaintBtn();
+  }
+}
+
+document.getElementById("toggleMaintBtn").addEventListener("click", toggleMaintenance);
 document.getElementById("reloadBtn").addEventListener("click", () => loadResults(false));
 document.getElementById("changeKeyBtn").addEventListener("click", () => {
   localStorage.removeItem("adminKey");
@@ -196,6 +257,7 @@ document.getElementById("toggleVotingBtn").addEventListener("click", toggleVotin
 
 window.addEventListener("DOMContentLoaded", () => {
   paintToggleBtn();
+  paintMaintBtn();
   loadResults(false);
 });
 </script>
