@@ -21,6 +21,26 @@
     .winner { font-weight: 800; }
     .muted { opacity: .75; }
     button { cursor:pointer; }
+    /* --- okno "Přidat změnu" --- */
+    #addUpdateModal .modal-content { max-width: 460px; text-align: left; }
+    #addUpdateModal h2 { margin: 0 0 14px; text-align: center; }
+    #addUpdateModal label.fld { display:block; font-weight:700; margin: 12px 0 6px; }
+    #addUpdateModal input[type="date"],
+    #addUpdateModal textarea {
+      width:100%; padding:10px 12px; border:1.5px solid #cfdccf; border-radius:10px;
+      font: inherit; box-sizing:border-box;
+    }
+    #addUpdateModal textarea { min-height: 110px; resize: vertical; }
+    .area-choice { display:flex; gap:10px; }
+    .area-choice label {
+      flex:1; text-align:center; padding:10px; border:2px solid #cfdccf; border-radius:10px;
+      font-weight:700; cursor:pointer;
+    }
+    .area-choice input { display:none; }
+    .area-choice label:has(input:checked) { border-color:#2b8a3e; background:#e8f5ea; color:#1b5e20; }
+    #updCancel { background:#dfe6e0; color:#203323; }
+    #updCancel:hover { background:#c9d3cb; }
+    .char-count { font-size:.8rem; opacity:.7; text-align:right; margin-top:4px; }
   </style>
 </head>
 <body>
@@ -38,7 +58,7 @@
       <button id="reloadBtn">🔄 Načíst znovu</button>
       <button id="changeKeyBtn">🔑 Změnit klíč</button>
       <button id="toggleVotingBtn" style="border:none; border-radius:8px; padding:10px 16px; font-weight:700; color:#fff;">⏳ Načítám stav…</button>
-      <button id="toggleMaintBtn" style="border:none; border-radius:8px; padding:10px 16px; font-weight:700; color:#fff;">⏳ Načítám údržbu…</button>
+      <button id="addUpdateBtn" type="button" style="background:#1b5e20; color:#fff; border:none; border-radius:8px; padding:10px 16px; font-weight:700;">➕ Přidat změnu do tabulky</button>
     </div>
 
     <div class="cards">
@@ -62,6 +82,31 @@
           </thead>
           <tbody id="body2"></tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Okno: přidat změnu do tabulky Novinky a změny -->
+  <div id="addUpdateModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>➕ Přidat změnu</h2>
+
+      <label class="fld" for="updDate">Datum změny</label>
+      <input type="date" id="updDate">
+
+      <label class="fld">Oblast</label>
+      <div class="area-choice">
+        <label><input type="radio" name="updArea" value="web" checked> 🌐 Web</label>
+        <label><input type="radio" name="updArea" value="soutez"> 🎤 Soutěž</label>
+      </div>
+
+      <label class="fld" for="updText">Co se změnilo</label>
+      <textarea id="updText" maxlength="500" placeholder="Např. Prodloužili jsme hlasování do pátku."></textarea>
+      <div class="char-count"><span id="updCount">0</span>/500</div>
+
+      <div class="modal-buttons">
+        <button id="updSave" type="button">✅ Přidat</button>
+        <button id="updCancel" type="button">❌ Zrušit</button>
       </div>
     </div>
   </div>
@@ -107,11 +152,6 @@ async function loadResults(forceAskKey = false) {
   if (typeof data.votingOpen === "boolean") {
     votingOpen = data.votingOpen;
     paintToggleBtn();
-  }
-
-  if (typeof data.maintenance === "boolean") {
-    maintenance = data.maintenance;
-    paintMaintBtn();
   }
 
   const results = data.results || {};
@@ -193,71 +233,83 @@ async function toggleVoting() {
   }
 }
 
-let maintenance = null; // true = web je v údržbě, false = běží normálně, null = zatím nevíme
-
-function paintMaintBtn() {
-  const btn = document.getElementById("toggleMaintBtn");
-  if (maintenance === null) {
-    btn.textContent = "⏳ Načítám údržbu…";
-    btn.style.background = "#999";
-    btn.disabled = true;
-    return;
-  }
-  btn.disabled = false;
-  if (maintenance) {
-    btn.textContent = "✅ Vypnout údržbu (web je teď zavřený)";
-    btn.style.background = "#2b8a3e";
-  } else {
-    btn.textContent = "🛠 Zapnout údržbu";
-    btn.style.background = "#6b4e16";
-  }
-}
-
-async function toggleMaintenance() {
-  const key = getKey();
-  if (!key) return;
-
-  const wantOn = !maintenance;
-  if (wantOn && !confirm("Zapnout údržbu?\n\nVeřejnost uvidí stránku údržby a nebude se moct přihlásit ani hlasovat. Admin zůstane funkční.")) {
-    return;
-  }
-
-  const btn = document.getElementById("toggleMaintBtn");
-  btn.disabled = true;
-  btn.textContent = wantOn ? "⏳ Zapínám…" : "⏳ Vypínám…";
-
-  try {
-    const res = await fetch("/api/maintenance?key=" + encodeURIComponent(key), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ enabled: wantOn }),
-    });
-
-    if (!res.ok) {
-      alert("❌ Nepodařilo se změnit údržbu (" + res.status + ")");
-      paintMaintBtn();
-      return;
-    }
-
-    maintenance = wantOn;
-    paintMaintBtn();
-  } catch (err) {
-    alert("❌ Chyba při komunikaci se serverem: " + err.message);
-    paintMaintBtn();
-  }
-}
-
-document.getElementById("toggleMaintBtn").addEventListener("click", toggleMaintenance);
 document.getElementById("reloadBtn").addEventListener("click", () => loadResults(false));
 document.getElementById("changeKeyBtn").addEventListener("click", () => {
   localStorage.removeItem("adminKey");
   loadResults(true);
 });
 document.getElementById("toggleVotingBtn").addEventListener("click", toggleVoting);
+// ===== Přidat změnu do tabulky =====
+function todayIso() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+function openAddModal() {
+  document.getElementById("updDate").value = todayIso();
+  document.querySelector('input[name="updArea"][value="web"]').checked = true;
+  document.getElementById("updText").value = "";
+  document.getElementById("updCount").textContent = "0";
+  document.getElementById("addUpdateModal").classList.remove("hidden");
+  document.getElementById("updText").focus();
+}
+
+function closeAddModal() {
+  document.getElementById("addUpdateModal").classList.add("hidden");
+}
+
+async function saveUpdate() {
+  const date = document.getElementById("updDate").value;
+  const area = document.querySelector('input[name="updArea"]:checked').value;
+  const text = document.getElementById("updText").value.trim();
+
+  if (!date) { alert("Vyber datum změny."); return; }
+  if (!text) { alert("Napiš, co se změnilo."); return; }
+
+  const key = getKey();
+  if (!key) return;
+
+  const saveBtn = document.getElementById("updSave");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "⏳ Ukládám…";
+
+  try {
+    const res = await fetch("/api/updates", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-key": key },
+      body: JSON.stringify({ date, area, text }),
+    });
+
+    if (res.status === 403) {
+      alert("❌ Špatný admin klíč. Klikni na „Změnit klíč“ a zadej ho znovu.");
+      return;
+    }
+    if (!res.ok) {
+      const out = await res.json().catch(() => ({}));
+      alert("❌ Nepodařilo se přidat změnu: " + (out.error || res.status));
+      return;
+    }
+
+    closeAddModal();
+    alert("✅ Změna byla přidána do tabulky na hlavní stránce.");
+  } catch (err) {
+    alert("❌ Chyba při komunikaci se serverem: " + err.message);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = "✅ Přidat";
+  }
+}
+
+document.getElementById("addUpdateBtn").addEventListener("click", openAddModal);
+document.getElementById("updSave").addEventListener("click", saveUpdate);
+document.getElementById("updCancel").addEventListener("click", closeAddModal);
+document.getElementById("updText").addEventListener("input", (e) => {
+  document.getElementById("updCount").textContent = e.target.value.length;
+});
+
 
 window.addEventListener("DOMContentLoaded", () => {
   paintToggleBtn();
-  paintMaintBtn();
   loadResults(false);
 });
 </script>

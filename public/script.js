@@ -44,25 +44,51 @@ const participants = [
 ];
 
 // ===== Novinky a změny (tabulka vpravo) =====
-// Nový záznam přidej úplně NAHORU (nejnovější první).
-// area: "web" nebo "soutez" (určuje jen barvu štítku)
-const updates = [
-  { date: "15. 11. 2026", area: "soutez", text: "Vyhlášeni vítězové ročníku 2026: Viky Farská (1. stupeň) a Antonín Fulka (2. stupeň). Hlasování je uzavřené." },
-  { date: "15. 11. 2026", area: "web", text: "Přidána kontrolka stavu hlasování (zelená = otevřeno, červená = uzavřeno) na přihlašovací stránce." },
-  { date: "15. 11. 2026", area: "web", text: "Nový vzhled webu a animace karet soutěžících při přepnutí kategorie." },
-];
+// Záznamy se načítají z databáze (/api/updates). Přidávají se v admin.html tlačítkem "Přidat změnu".
 
-function renderNews() {
+function formatDateCz(iso) {
+  const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? `${Number(m[3])}. ${Number(m[2])}. ${m[1]}` : String(iso || "");
+}
+
+async function renderNews() {
   const body = qs("newsBody");
   if (!body) return;
-  body.innerHTML = "";
 
-  updates.forEach(u => {
+  const message = (txt) => {
+    body.innerHTML = "";
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 3;
+    td.style.textAlign = "center";
+    td.textContent = txt;
+    tr.appendChild(td);
+    body.appendChild(tr);
+  };
+
+  let list = [];
+  try {
+    const res = await fetch("/api/updates");
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    list = data.updates || [];
+  } catch (e) {
+    message("Novinky se nepodařilo načíst.");
+    return;
+  }
+
+  if (!list.length) {
+    message("Zatím žádné záznamy.");
+    return;
+  }
+
+  body.innerHTML = "";
+  list.forEach(u => {
     const tr = document.createElement("tr");
 
     const tdDate = document.createElement("td");
     tdDate.className = "news-date";
-    tdDate.textContent = u.date;
+    tdDate.textContent = formatDateCz(u.update_date);
 
     const tdArea = document.createElement("td");
     const tag = document.createElement("span");
