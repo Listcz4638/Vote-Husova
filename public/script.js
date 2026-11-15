@@ -43,100 +43,37 @@ const participants = [
   { name:"Andrea Maděrová - 4.B", img:"contestant7.png", video:"https://youtu.be/ZMAYXMeQ-Fo", category:"1", song: "Mám styl Čendy", artist: "Karel Gott" },
 ];
 
-// ===== Minulí vítězové =====
-// Nový ročník přidej úplně NAHORU (nejnovější první).
-// category: "1" = 1. stupeň, "2" = 2. stupeň
-// video: odkaz na YouTube (youtu.be/..., youtube.com/watch?v=...) – může zůstat prázdné ""
-// !!! Níže jsou jen UKÁZKOVÉ řádky – přepiš je skutečnými vítězi.
-const winners = [
-  { year: "2025", category: "1", name: "Doplňte jméno – třída", song: "Doplňte název písně", video: "" },
-  { year: "2025", category: "2", name: "Doplňte jméno – třída", song: "Doplňte název písně", video: "" },
+// ===== Novinky a změny (tabulka vpravo) =====
+// Nový záznam přidej úplně NAHORU (nejnovější první).
+// area: "web" nebo "soutez" (určuje jen barvu štítku)
+const updates = [
+  { date: "15. 11. 2026", area: "soutez", text: "Vyhlášeni vítězové ročníku 2026: Viky Farská (1. stupeň) a Antonín Fulka (2. stupeň). Hlasování je uzavřené." },
+  { date: "15. 11. 2026", area: "web", text: "Přidána kontrolka stavu hlasování (zelená = otevřeno, červená = uzavřeno) na přihlašovací stránce." },
+  { date: "15. 11. 2026", area: "web", text: "Nový vzhled webu a animace karet soutěžících při přepnutí kategorie." },
 ];
 
-function youtubeId(url) {
-  const m = String(url || "").match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{11})/);
-  return m ? m[1] : null;
-}
-
-function renderWinnerVideos() {
-  const box = qs("winnersVideos");
-  if (!box) return;
-  box.innerHTML = "";
-
-  const withVideo = winners.filter(w => youtubeId(w.video));
-
-  if (!withVideo.length) {
-    box.innerHTML = `<div class="winners-video-empty">🎬 Videa vítězů doplníme</div>`;
-    return;
-  }
-
-  withVideo.forEach(w => {
-    const id = youtubeId(w.video);
-    const caption = `${w.year} · ${w.category === "2" ? "2. stupeň" : "1. stupeň"} – ${w.name}`;
-
-    const card = document.createElement("div");
-    card.className = "winner-video";
-
-    const thumb = document.createElement("button");
-    thumb.type = "button";
-    thumb.className = "winner-video-thumb";
-    thumb.setAttribute("aria-label", "Přehrát video: " + caption);
-    thumb.style.backgroundImage = `url(https://i.ytimg.com/vi/${id}/hqdefault.jpg)`;
-    thumb.innerHTML = `<span class="winner-play">▶</span>`;
-
-    // klik = nahradí náhled přehrávačem (nic se nenačítá, dokud si to někdo nepustí)
-    thumb.addEventListener("click", () => {
-      const iframe = document.createElement("iframe");
-      iframe.className = "winner-video-frame";
-      iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
-      iframe.title = caption;
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-      iframe.allowFullscreen = true;
-      card.replaceChild(iframe, thumb);
-    });
-
-    const cap = document.createElement("div");
-    cap.className = "winner-video-cap";
-    cap.textContent = caption;
-
-    card.append(thumb, cap);
-    box.appendChild(card);
-  });
-}
-
-function renderWinners() {
-  renderWinnerVideos();
-
-  const body = qs("winnersBody");
+function renderNews() {
+  const body = qs("newsBody");
   if (!body) return;
   body.innerHTML = "";
 
-  if (!winners.length) {
-    body.innerHTML = `<tr><td colspan="4" style="text-align:center;">Zatím žádní vítězové.</td></tr>`;
-    return;
-  }
-
-  winners.forEach(w => {
+  updates.forEach(u => {
     const tr = document.createElement("tr");
 
-    const tdYear = document.createElement("td");
-    tdYear.className = "winners-year";
-    tdYear.textContent = w.year;
+    const tdDate = document.createElement("td");
+    tdDate.className = "news-date";
+    tdDate.textContent = u.date;
 
-    const tdCat = document.createElement("td");
+    const tdArea = document.createElement("td");
     const tag = document.createElement("span");
-    tag.className = "winners-tag " + (w.category === "2" ? "winners-tag-2" : "winners-tag-1");
-    tag.textContent = w.category === "2" ? "2. stupeň" : "1. stupeň";
-    tdCat.appendChild(tag);
+    tag.className = "news-tag " + (u.area === "soutez" ? "news-tag-soutez" : "news-tag-web");
+    tag.textContent = u.area === "soutez" ? "Soutěž" : "Web";
+    tdArea.appendChild(tag);
 
-    const tdName = document.createElement("td");
-    tdName.className = "winners-name";
-    tdName.textContent = "🏆 " + w.name;
+    const tdText = document.createElement("td");
+    tdText.textContent = u.text;
 
-    const tdSong = document.createElement("td");
-    tdSong.textContent = w.song;
-
-    tr.append(tdYear, tdCat, tdName, tdSong);
+    tr.append(tdDate, tdArea, tdText);
     body.appendChild(tr);
   });
 }
@@ -276,7 +213,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  renderWinners();
+  renderNews();
   checkLogin();
 });
 
