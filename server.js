@@ -68,68 +68,6 @@ passport.use(
   )
 );
 
-// ===== MAINTENANCE MODE =====
-// Příznak "maintenance" je v Supabase tabulce "settings" (řádek id = 1).
-// Když je zapnutý, veřejnost vidí stránku údržby (HTTP 503), ale admin dál funguje.
-let maintenanceCache = { value: false, ts: 0 };
-const MAINT_TTL_MS = 5000; // jak dlouho si pamatujeme stav, aby se DB nedotazovala při každém požadavku
-
-async function getMaintenance() {
-  if (!supabase) return false;
-  if (Date.now() - maintenanceCache.ts < MAINT_TTL_MS) return maintenanceCache.value;
-
-  const { data, error } = await supabase
-    .from("settings")
-    .select("maintenance")
-    .eq("id", 1)
-    .single();
-
-  if (error) {
-    // když se stav nepodaří zjistit, web radši NEzamykáme – necháme poslední známou hodnotu
-    console.error("SUPABASE MAINTENANCE READ ERROR:", error);
-    maintenanceCache.ts = Date.now();
-    return maintenanceCache.value;
-  }
-
-  maintenanceCache = { value: !!data?.maintenance, ts: Date.now() };
-  return maintenanceCache.value;
-}
-
-// cesty, které fungují i během údržby (admin + soubory pro stránku údržby)
-const MAINT_ALLOWED = new Set([
-  "/admin.html",
-  "/api/results",
-  "/api/maintenance",
-  "/api/voting-status",
-  "/udrzba.html",
-  "/style.css",
-  "/logo.png",
-  "/tile.png",
-  "/husovalogo.png",
-  "/favicon.ico",
-]);
-
-app.use(async (req, res, next) => {
-  try {
-    if (MAINT_ALLOWED.has(req.path)) return next();
-    if (!(await getMaintenance())) return next();
-
-    res.set("Retry-After", "300");
-
-    if (req.path.startsWith("/api/") || req.path === "/me") {
-      return res.status(503).json({
-        ok: false,
-        maintenance: true,
-        error: "Probíhá údržba, zkus to prosím za chvíli.",
-      });
-    }
-    return res.status(503).sendFile(path.join(__dirname, "public", "udrzba.html"));
-  } catch (e) {
-    console.error("MAINTENANCE MIDDLEWARE ERROR:", e);
-    return next();
-  }
-});
-
 // ===== STATIC =====
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -241,45 +179,6 @@ app.post("/api/voting-status", requireAdmin, async (req, res) => {
   }
 });
 
-// ===== MAINTENANCE API =====
-// veřejné – stránka údržby podle toho pozná, že se má sama obnovit
-app.get("/api/maintenance", async (req, res) => {
-  try {
-    return res.json({ ok: true, maintenance: await getMaintenance() });
-  } catch (e) {
-    return res.json({ ok: true, maintenance: false });
-  }
-});
-
-// jen admin – zapnutí/vypnutí údržby
-app.post("/api/maintenance", requireAdmin, async (req, res) => {
-  const err = needSupabase(res);
-  if (err) return;
-
-  const { enabled } = req.body;
-  if (typeof enabled !== "boolean") {
-    return res.status(400).json({ ok: false, error: "Missing boolean 'enabled' in body" });
-  }
-
-  try {
-    const { error } = await supabase
-      .from("settings")
-      .update({ maintenance: enabled })
-      .eq("id", 1);
-
-    if (error) {
-      console.error("SUPABASE MAINTENANCE UPDATE ERROR:", error);
-      return res.status(500).json({ ok: false, error: "Database error (je v tabulce settings sloupec 'maintenance'?)" });
-    }
-
-    maintenanceCache = { value: enabled, ts: Date.now() }; // projeví se hned
-    return res.json({ ok: true, maintenance: enabled });
-  } catch (e) {
-    console.error("MAINTENANCE UPDATE ERROR:", e);
-    return res.status(500).json({ ok: false, error: "Server error" });
-  }
-});
-
 // ===== VOTE =====
 // 1 email = 1 hlas v kategorii (řeší DB unique index)
 app.post("/api/vote", requireAuth, async (req, res) => {
@@ -355,11 +254,80 @@ app.get("/api/results", requireAdmin, async (req, res) => {
     }
 
     const votingOpen = await getVotingOpen();
-    const maintenance = await getMaintenance();
 
-    return res.json({ ok: true, total: data.length, results, votingOpen, maintenance });
+    return res.json({ ok: true, total: data.length, results, votingOpen });
   } catch (e) {
     console.error("RESULTS ERROR:", e);
+    return res.status(500).json({ ok: false, error: "Server error" });
+  }
+});
+
+// ===== NOVINKY A ZMĚNY (tabulka na hlavní stránce) =====
+// Záznamy jsou v Supabase tabulce "site_updates" (SQL je na konci souboru).
+
+function isValidIsoDate(s) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const [y, m, d] = s.split("-").map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+}
+
+// veřejné – čte hlavní stránka
+app.get("/api/updates", async (req, res) => {
+  const err = needSupabase(res);
+  if (err) return;
+
+  try {
+    const { data, error } = await supabase
+      .from("site_updates")
+      .select("id, update_date, area, text")
+      .order("update_date", { ascending: false })
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (error) {
+      console.error("SUPABASE UPDATES SELECT ERROR:", error);
+      return res.status(500).json({ ok: false, error: "Database error" });
+    }
+
+    return res.json({ ok: true, updates: data || [] });
+  } catch (e) {
+    console.error("UPDATES ERROR:", e);
+    return res.status(500).json({ ok: false, error: "Server error" });
+  }
+});
+
+// jen admin – přidání nového záznamu
+app.post("/api/updates", requireAdmin, async (req, res) => {
+  const err = needSupabase(res);
+  if (err) return;
+
+  try {
+    const { date, area, text } = req.body || {};
+    const cleanText = String(text || "").trim();
+
+    if (!isValidIsoDate(String(date || ""))) {
+      return res.status(400).json({ ok: false, error: "Bad date" });
+    }
+    if (!["web", "soutez"].includes(area)) {
+      return res.status(400).json({ ok: false, error: "Bad area" });
+    }
+    if (!cleanText || cleanText.length > 500) {
+      return res.status(400).json({ ok: false, error: "Text must be 1-500 characters" });
+    }
+
+    const { error } = await supabase
+      .from("site_updates")
+      .insert({ update_date: date, area, text: cleanText });
+
+    if (error) {
+      console.error("SUPABASE UPDATES INSERT ERROR:", error);
+      return res.status(500).json({ ok: false, error: "Database error" });
+    }
+
+    return res.json({ ok: true });
+  } catch (e) {
+    console.error("UPDATES POST ERROR:", e);
     return res.status(500).json({ ok: false, error: "Server error" });
   }
 });
@@ -383,9 +351,25 @@ insert into settings (id, voting_open)
 values (1, false)
 on conflict (id) do nothing;
 
--- údržba (spusť taky jednou):
-alter table settings add column if not exists maintenance boolean not null default false;
-
 Server přistupuje k Supabase přes SERVICE ROLE klíč, takže obchází RLS –
 žádné dodatečné policy pro tabulku "settings" není potřeba.
+
+===== SQL MIGRACE 2 – novinky a změny (spusť jednou v Supabase → SQL editor) =====
+
+create table if not exists site_updates (
+  id bigint generated always as identity primary key,
+  update_date date not null,
+  area text not null check (area in ('web', 'soutez')),
+  text text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table site_updates enable row level security;
+-- Žádná policy = přes anon klíč se nedá nic číst ani psát. Server používá SERVICE ROLE klíč.
+
+-- (volitelné) vzorové záznamy, ať tabulka na webu není prázdná:
+insert into site_updates (update_date, area, text) values
+  ('2026-11-15', 'soutez', 'Vyhlášeni vítězové ročníku 2026: Viky Farská (1. stupeň) a Antonín Fulka (2. stupeň). Hlasování je uzavřené.'),
+  ('2026-11-15', 'web', 'Přidána kontrolka stavu hlasování (zelená = otevřeno, červená = uzavřeno) na přihlašovací stránce.'),
+  ('2026-11-15', 'web', 'Nový vzhled webu a animace karet soutěžících při přepnutí kategorie.');
 */
