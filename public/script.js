@@ -30,7 +30,7 @@ function paintLoginBadge() {
 
 // ➤ Soutěžící (category: "1" = 1. stupeň, "2" = 2. stupeň)
 const participants = [
-  { name:"", img:"", video:"", category:"2", song: "", artist: "" },
+  { name:"", img:"", video:"", category:"", song: "", artist: "" },
 
 ];
 
