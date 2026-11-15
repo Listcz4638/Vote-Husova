@@ -77,17 +77,20 @@
 
       <div class="vote-grid" id="voteGrid"></div>
     </section>
-    <!-- NOVINKY A ZMĚNY (záznamy se upravují v script.js → const updates) -->
-    <section class="news-section" id="newsSection">
-      <h2>📢 Novinky a změny</h2>
-      <p class="news-sub">Tady najdete všechny důležité změny v soutěži i na webu.</p>
-      <div class="news-table-wrap">
-        <table class="news-table">
-          <thead>
-            <tr><th>Datum</th><th>Oblast</th><th>Co se změnilo</th></tr>
-          </thead>
-          <tbody id="newsBody"></tbody>
-        </table>
+    <!-- MINULÍ VÍTĚZOVÉ: videa vlevo, tabulka vpravo (záznamy se upravují v script.js → const winners) -->
+    <section class="winners-section" id="winnersSection">
+      <h2>🏆 Minulí vítězové</h2>
+      <p class="winners-sub">Soutěžící, kteří zvítězili v minulých ročnících Hlasu Husovky.</p>
+      <div class="winners-layout">
+        <div class="winners-videos" id="winnersVideos"></div>
+        <div class="winners-table-wrap">
+          <table class="winners-table">
+            <thead>
+              <tr><th>Ročník</th><th>Kategorie</th><th>Vítěz</th><th>Píseň</th></tr>
+            </thead>
+            <tbody id="winnersBody"></tbody>
+          </table>
+        </div>
       </div>
     </section>
   </main>
