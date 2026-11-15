@@ -59,6 +59,7 @@
       <button id="changeKeyBtn">🔑 Změnit klíč</button>
       <button id="toggleVotingBtn" style="border:none; border-radius:8px; padding:10px 16px; font-weight:700; color:#fff;">⏳ Načítám stav…</button>
       <button id="addUpdateBtn" type="button" style="background:#1b5e20; color:#fff; border:none; border-radius:8px; padding:10px 16px; font-weight:700;">➕ Přidat změnu do tabulky</button>
+      <button id="maintBtn" type="button" style="color:#fff; border:none; border-radius:8px; padding:10px 16px; font-weight:700; background:#999;">🛠 Údržba</button>
     </div>
 
     <div class="cards">
@@ -152,6 +153,11 @@ async function loadResults(forceAskKey = false) {
   if (typeof data.votingOpen === "boolean") {
     votingOpen = data.votingOpen;
     paintToggleBtn();
+  }
+
+  if (typeof data.maintenance === "boolean") {
+    maintenanceOn = data.maintenance;
+    paintMaintBtn();
   }
 
   const results = data.results || {};
@@ -307,6 +313,61 @@ document.getElementById("updText").addEventListener("input", (e) => {
   document.getElementById("updCount").textContent = e.target.value.length;
 });
 
+
+// ===== Údržba =====
+let maintenanceOn = null; // true = zapnutá, false = vypnutá, null = zatím nevíme
+
+function paintMaintBtn() {
+  const btn = document.getElementById("maintBtn");
+  if (maintenanceOn === null) {
+    btn.textContent = "🛠 Údržba";
+    btn.style.background = "#999";
+  } else if (maintenanceOn) {
+    btn.textContent = "🛠 Údržba ZAPNUTÁ – vypnout";
+    btn.style.background = "#e53935";
+  } else {
+    btn.textContent = "🛠 Zapnout údržbu";
+    btn.style.background = "#e08a00";
+  }
+}
+
+async function toggleMaintenance() {
+  const key = getKey();
+  if (!key) return;
+
+  const want = !maintenanceOn;
+  if (want && !confirm("Zapnout údržbu?\n\nNávštěvníci neuvidí přihlášení ani hlasování, jen zprávu, že web je v údržbě.")) {
+    return;
+  }
+
+  const btn = document.getElementById("maintBtn");
+  btn.disabled = true;
+  btn.textContent = want ? "⏳ Zapínám…" : "⏳ Vypínám…";
+
+  try {
+    const res = await fetch("/api/maintenance", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-key": key },
+      body: JSON.stringify({ on: want }),
+    });
+
+    if (res.status === 403) {
+      alert("❌ Špatný admin klíč. Klikni na „Změnit klíč“ a zadej ho znovu.");
+    } else if (!res.ok) {
+      const out = await res.json().catch(() => ({}));
+      alert("❌ Nepodařilo se změnit údržbu: " + (out.error || res.status));
+    } else {
+      maintenanceOn = want;
+    }
+  } catch (err) {
+    alert("❌ Chyba při komunikaci se serverem: " + err.message);
+  } finally {
+    btn.disabled = false;
+    paintMaintBtn();
+  }
+}
+
+document.getElementById("maintBtn").addEventListener("click", toggleMaintenance);
 
 window.addEventListener("DOMContentLoaded", () => {
   paintToggleBtn();

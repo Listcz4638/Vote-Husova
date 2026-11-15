@@ -203,7 +203,32 @@ function openVoteModal(name, buttonEl) {
 }
 
 // ===== login check =====
+let maintenanceOn = false;
+
+async function loadMaintenance() {
+  try {
+    const res = await fetch("/api/maintenance");
+    const data = await res.json();
+    maintenanceOn = !!data.maintenance;
+  } catch (e) {
+    maintenanceOn = false;
+  }
+}
+
+function showMaintenance() {
+  qs("loginSection").classList.add("hidden");
+  qs("voteSection").classList.add("hidden");
+  qs("logoutBtn")?.classList.add("hidden");
+  qs("maintenanceSection")?.classList.remove("hidden");
+}
+
 async function checkLogin() {
+  await loadMaintenance();
+  if (maintenanceOn) {
+    showMaintenance();
+    return;
+  }
+
   const res = await fetch("/me", { credentials: "include" });
   const data = await res.json();
 

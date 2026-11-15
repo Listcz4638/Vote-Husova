@@ -804,3 +804,36 @@ footer {
 @media (max-width: 480px) {
   .winners-videos { grid-template-columns: 1fr; }
 }
+
+/* ===== ÚDRŽBA ===== */
+
+.maintenance-card {
+  max-width: 440px;
+  margin: 60px auto;
+  background: white;
+  border-radius: 26px;
+  padding: 42px 40px 36px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(27,94,32,0.06);
+  text-align: center;
+}
+
+.maintenance-card.hidden { display: none; }
+
+.maintenance-icon {
+  font-size: 3rem;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.maintenance-card h2 {
+  margin: 4px 0 8px;
+  color: var(--forest-deep);
+  font-size: 1.6rem;
+}
+
+.maintenance-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
