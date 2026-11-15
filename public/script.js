@@ -30,8 +30,54 @@ function paintLoginBadge() {
 
 // ➤ Soutěžící (category: "1" = 1. stupeň, "2" = 2. stupeň)
 const participants = [
-  { name:"", img:"", video:"", category:"", song: "", artist: "" },
+  { name:"František Škvor - 5.B", img:"contestant8.png", video:"https://youtu.be/Es-eDRNidU4", category:"2", song: "Jdem zpátky do lesů", artist: "Pavel Žalman Lohonka" },
+  { name:"Antonín Fulka - 6.A", img:"contestant9.png", video:"https://youtu.be/xcDOwpogRT4", category:"2", song: "Cesta", artist: "Kryštof" },
+  { name:"Anežka Hospodářová - 7.B", img:"contestant12.png", video:"https://youtu.be/QBrwBdnpM00", category:"2", song: "Větře větříčku", artist: "S Čerty nejsou žerty" },
+  { name:"Bára Hladíková - 8.B", img:"contestant14.png", video:"https://youtu.be/LE6VWiZW0Sk", category:"2", song: "Cups (Pitch Perfect’s “When I’m Gone”)", artist: "Anna Kendrick" },
+  { name:"Jakub Svoboda, Hynek Dolejš - 9.A", img:"contestant15.png", video:"https://youtu.be/GRnpKfQjzRQ", category:"2", song: "Pepa & Teta", artist: "Jakub Svoboda & Hynek Dolejš" },
+  
+  { name:"Bruno Kollmer - 1.B", img:"contestant2.png", video:"https://youtu.be/NxWaAOeuWJ4", category:"1", song: "Příšera", artist: "Trampské perly" },
+  { name:"Roman Sobotka - 2.A", img:"contestant3.png", video:"https://www.youtube.com/watch?v=0y-Ul9RYTSY", category:"1", song: "Na ostří nože", artist: "Ewa Farna" },
+  { name:"Viky Farská - 3.A", img:"contestant5.png", video:"https://youtu.be/NyZihcd-Yj0", category:"1", song: "Malý princ", artist: "Eva Burešová" },
+  { name:"Jirka Šidlof - 3.B", img:"contestant6.png", video:"https://youtu.be/BnHfiDu_ZTQ", category:"1", song: "Mám styl Čendy", artist: "Karel Gott" },
+  { name:"Andrea Maděrová - 4.B", img:"contestant7.png", video:"https://youtu.be/ZMAYXMeQ-Fo", category:"1", song: "Mám styl Čendy", artist: "Karel Gott" },
 ];
+
+// ===== Novinky a změny =====
+// Nový záznam přidej úplně NAHORU (nejnovější první).
+// area: "web" nebo "soutez" (jen určuje barvu štítku)
+const updates = [
+  { date: "15. 11. 2026", area: "web", text: "Přidána kontrolka stavu hlasování (zelená = otevřeno, červená = uzavřeno) na přihlašovací stránce." },
+  { date: "15. 11. 2026", area: "web", text: "Nový vzhled webu a animace karet soutěžících při přepnutí kategorie." },
+  { date: "15. 11. 2026", area: "soutez", text: "Hlasování otevírají a uzavírají organizátoři. Aktuální stav vidíte u přihlášení." },
+];
+
+function renderNews() {
+  const body = qs("newsBody");
+  if (!body) return;
+  body.innerHTML = "";
+
+  updates.forEach(u => {
+    const tr = document.createElement("tr");
+
+    const tdDate = document.createElement("td");
+    tdDate.className = "news-date";
+    tdDate.textContent = u.date;
+
+    const tdArea = document.createElement("td");
+    const tag = document.createElement("span");
+    tag.className = "news-tag " + (u.area === "soutez" ? "news-tag-soutez" : "news-tag-web");
+    tag.textContent = u.area === "soutez" ? "Soutěž" : "Web";
+    tdArea.appendChild(tag);
+
+    const tdText = document.createElement("td");
+    tdText.className = "news-text";
+    tdText.textContent = u.text;
+
+    tr.append(tdDate, tdArea, tdText);
+    body.appendChild(tr);
+  });
+}
 
 // ===== UI show/hide =====
 function showLogin() {
@@ -48,32 +94,9 @@ function showVote(userText) {
 }
 
 // ===== render =====
-// zvýraznění aktivní kategorie
-function highlightCategory() {
-  document.querySelectorAll(".catBtn").forEach(b => {
-    b.classList.toggle("active", b.dataset.cat === selectedCategory);
-  });
-}
-
-function noContestantsMessage(text) {
-  return `<p class="no-contestants" style="text-align:center; font-weight:600; grid-column:1 / -1;">${text}</p>`;
-}
-
 function renderCards() {
   const voteGrid = qs("voteGrid");
   voteGrid.innerHTML = "";
-
-  // úplně bez soutěžících -> schováme výběr kategorie a ukážeme informaci
-  const hasAny = participants.length > 0;
-  const hint = qs("categoryHint");
-  const catRow = document.querySelector(".category-row");
-  if (hint) hint.style.display = hasAny ? "" : "none";
-  if (catRow) catRow.style.display = hasAny ? "" : "none";
-
-  if (!hasAny) {
-    voteGrid.innerHTML = noContestantsMessage("Momentálně nejsou přihlášeni žádní soutěžící. 🎤");
-    return;
-  }
 
   if (!selectedCategory) {
     voteGrid.innerHTML = `<p style="text-align:center; font-weight:600;">Vyber kategorii (1. nebo 2. stupeň).</p>`;
@@ -81,13 +104,6 @@ function renderCards() {
   }
 
   const filtered = participants.filter(p => p.category === selectedCategory);
-
-  // v této kategorii nikdo není
-  if (filtered.length === 0) {
-    highlightCategory();
-    voteGrid.innerHTML = noContestantsMessage("V této kategorii momentálně nejsou žádní soutěžící.");
-    return;
-  }
 
   filtered.forEach((p, i) => {
     const div = document.createElement("div");
@@ -123,7 +139,10 @@ if (voteButtons.length) {
   });
 }
 
-  highlightCategory();
+  // zvýraznění aktivní kategorie
+  document.querySelectorAll(".catBtn").forEach(b => {
+    b.classList.toggle("active", b.dataset.cat === selectedCategory);
+  });
 }
 
 // ===== modal vote =====
@@ -195,5 +214,12 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  renderNews();
   checkLogin();
 });
+
+
+
+
+
+

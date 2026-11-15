@@ -658,3 +658,80 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ===== NOVINKY A ZMĚNY ===== */
+
+.news-section {
+  max-width: 900px;
+  margin: 40px auto 110px; /* spodní místo kvůli fixnímu footeru */
+  padding: 26px 24px 20px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 22px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(27,94,32,0.06);
+  text-align: left;
+}
+
+.news-section h2 {
+  margin: 0 0 4px;
+  color: var(--forest-deep);
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.news-sub {
+  margin: 0 0 18px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.news-table-wrap {
+  overflow-x: auto;
+}
+
+.news-table {
+  width: 100%;
+  margin: 0;
+  box-shadow: none;
+  border-radius: 12px;
+}
+
+.news-table th {
+  text-align: left;
+}
+
+.news-table td {
+  text-align: left;
+  vertical-align: top;
+}
+
+.news-date {
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--forest);
+}
+
+.news-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.news-tag-web {
+  background: #e3f3e6;
+  color: var(--forest);
+}
+
+.news-tag-soutez {
+  background: #fff1cc;
+  color: #8a5a00;
+}
+
+@media (max-width: 600px) {
+  .news-section { margin: 30px 12px 110px; padding: 20px 14px 14px; }
+}
