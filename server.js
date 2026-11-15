@@ -195,6 +195,10 @@ app.post("/api/vote", requireAuth, async (req, res) => {
       return res.status(400).json({ ok: false, error: "Bad category" });
     }
 
+    if (await getMaintenance()) {
+      return res.status(503).json({ ok: false, error: "Web je právě v údržbě." });
+    }
+
     const votingOpen = await getVotingOpen();
     if (!votingOpen) {
       return res.status(403).json({ ok: false, error: "Hlasování je momentálně uzavřené." });
@@ -255,9 +259,69 @@ app.get("/api/results", requireAdmin, async (req, res) => {
 
     const votingOpen = await getVotingOpen();
 
-    return res.json({ ok: true, total: data.length, results, votingOpen });
+    const maintenance = await getMaintenance();
+
+    return res.json({ ok: true, total: data.length, results, votingOpen, maintenance });
   } catch (e) {
     console.error("RESULTS ERROR:", e);
+    return res.status(500).json({ ok: false, error: "Server error" });
+  }
+});
+
+// ===== ÚDRŽBA =====
+// Příznak je ve stejné tabulce "settings" (sloupec maintenance). SQL je na konci souboru.
+
+async function getMaintenance() {
+  const { data, error } = await supabase
+    .from("settings")
+    .select("maintenance")
+    .eq("id", 1)
+    .single();
+
+  if (error) {
+    console.error("SUPABASE MAINTENANCE READ ERROR:", error);
+    return false; // když se stav nepodaří zjistit, web radši běží normálně
+  }
+  return !!data?.maintenance;
+}
+
+// veřejné – hlavní stránka podle toho ukáže zprávu o údržbě
+app.get("/api/maintenance", async (req, res) => {
+  const err = needSupabase(res);
+  if (err) return;
+
+  try {
+    return res.json({ ok: true, maintenance: await getMaintenance() });
+  } catch (e) {
+    console.error("MAINTENANCE ERROR:", e);
+    return res.status(500).json({ ok: false, error: "Server error" });
+  }
+});
+
+// jen admin – zapnutí / vypnutí údržby
+app.post("/api/maintenance", requireAdmin, async (req, res) => {
+  const err = needSupabase(res);
+  if (err) return;
+
+  const { on } = req.body || {};
+  if (typeof on !== "boolean") {
+    return res.status(400).json({ ok: false, error: "Missing boolean 'on' in body" });
+  }
+
+  try {
+    const { error } = await supabase
+      .from("settings")
+      .update({ maintenance: on })
+      .eq("id", 1);
+
+    if (error) {
+      console.error("SUPABASE MAINTENANCE UPDATE ERROR:", error);
+      return res.status(500).json({ ok: false, error: "Database error" });
+    }
+
+    return res.json({ ok: true, maintenance: on });
+  } catch (e) {
+    console.error("MAINTENANCE UPDATE ERROR:", e);
     return res.status(500).json({ ok: false, error: "Server error" });
   }
 });
@@ -372,4 +436,8 @@ insert into site_updates (update_date, area, text) values
   ('2026-11-15', 'soutez', 'Vyhlášeni vítězové ročníku 2026: Viky Farská (1. stupeň) a Antonín Fulka (2. stupeň). Hlasování je uzavřené.'),
   ('2026-11-15', 'web', 'Přidána kontrolka stavu hlasování (zelená = otevřeno, červená = uzavřeno) na přihlašovací stránce.'),
   ('2026-11-15', 'web', 'Nový vzhled webu a animace karet soutěžících při přepnutí kategorie.');
+
+===== SQL MIGRACE 3 – údržba (spusť jednou v Supabase → SQL editor) =====
+
+alter table settings add column if not exists maintenance boolean not null default false;
 */
