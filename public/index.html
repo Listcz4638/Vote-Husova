@@ -77,13 +77,12 @@
 
       <div class="vote-grid" id="voteGrid"></div>
     </section>
-    <!-- VÝHERCI: videa vlevo, tabulka změn vpravo -->
-    <section class="winners-section" id="winnersSection">
-      <h2>🏆 Výherci pěveckého ročníku 2026</h2>
+    <!-- VÝHERCI (vlevo) a NOVINKY (vpravo) – dvě samostatné karty -->
+    <div class="info-row">
 
-      <div class="winners-layout">
-
-        <!-- VIDEA (vlevo) – ID videa je ta část za youtu.be/ -->
+      <!-- KARTA 1: VIDEA – ID videa je ta část za youtu.be/, start = vteřina, od které se video pustí -->
+      <section class="panel" id="winnersSection">
+        <h2>🏆 Výherci pěveckého ročníku 2026</h2>
         <div class="winners-videos">
           <div class="winner-card">
             <div class="winner-frame">
@@ -101,23 +100,23 @@
             <div class="winner-card-cap">Výherce 2. stupně</div>
           </div>
         </div>
+      </section>
 
-        <!-- TABULKA ZMĚN (vpravo) – řádky se upravují v script.js → const updates -->
-        <div class="news-box">
-          <h3>📢 Novinky a změny</h3>
-          <p class="news-sub">Změny v soutěži i na webu na jednom místě.</p>
-          <div class="news-table-wrap">
-            <table class="news-table">
-              <thead>
-                <tr><th>Datum</th><th>Oblast</th><th>Co se změnilo</th></tr>
-              </thead>
-              <tbody id="newsBody"></tbody>
-            </table>
-          </div>
+      <!-- KARTA 2: TABULKA ZMĚN – řádky se upravují v script.js → const updates -->
+      <section class="panel" id="newsSection">
+        <h2>📢 Novinky a změny</h2>
+        <p class="news-sub">Změny v soutěži i na webu na jednom místě.</p>
+        <div class="news-table-wrap">
+          <table class="news-table">
+            <thead>
+              <tr><th>Datum</th><th>Oblast</th><th>Co se změnilo</th></tr>
+            </thead>
+            <tbody id="newsBody"></tbody>
+          </table>
         </div>
+      </section>
 
-      </div>
-    </section>
+    </div>
   </main>
 
   <!-- Modal potvrzení hlasu -->

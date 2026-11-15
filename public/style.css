@@ -659,28 +659,36 @@ footer {
   * { animation: none !important; transition: none !important; }
 }
 
-/* ===== VÝHERCI + NOVINKY (videa vlevo, tabulka vpravo) ===== */
+/* ===== VÝHERCI + NOVINKY: dvě samostatné karty vedle sebe ===== */
 
-.winners-section {
+.info-row {
   max-width: 1200px;
   margin: 40px auto 110px; /* spodní místo kvůli fixnímu footeru */
-  padding: 30px 24px 24px;
-  background: rgba(255,255,255,0.92);
-  border-radius: 22px;
-  box-shadow: var(--shadow-card);
-  border: 1px solid rgba(27,94,32,0.06);
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 24px;
+  align-items: start;
 }
 
-.winners-section h2 {
+.panel {
+  background: rgba(255,255,255,0.96);
+  border-radius: 22px;
+  padding: 26px 22px 22px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(27,94,32,0.06);
+  min-width: 0; /* aby se tabulka uvnitř mohla posouvat a nerozbila grid */
+}
+
+.panel h2 {
   position: relative;
-  margin: 0 0 24px;
+  margin: 0 0 22px;
   padding-bottom: 14px;
   color: var(--forest-deep);
-  font-size: 1.6rem;
+  font-size: 1.45rem;
   text-align: center;
 }
 
-.winners-section h2::after {
+.panel h2::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -692,14 +700,7 @@ footer {
   background: linear-gradient(90deg, var(--leaf-light), var(--sun));
 }
 
-.winners-layout {
-  display: grid;
-  grid-template-columns: 1.35fr 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-/* --- videa (vlevo) --- */
+/* --- videa --- */
 
 .winners-videos {
   display: grid;
@@ -707,13 +708,11 @@ footer {
   gap: 16px;
 }
 
-.winner-card,
-.news-box {
-  background: #fff;
+.winner-card {
+  background: #f4f9f5;
   border-radius: 16px;
   padding: 12px;
-  box-shadow: 0 10px 22px -12px rgba(27,94,32,0.3);
-  border: 1px solid rgba(27,94,32,0.07);
+  border: 1px solid rgba(27,94,32,0.08);
 }
 
 .winner-frame {
@@ -737,21 +736,10 @@ footer {
   text-align: center;
 }
 
-/* --- tabulka změn (vpravo) --- */
-
-.news-box {
-  padding: 16px 14px 10px;
-}
-
-.news-box h3 {
-  margin: 0 0 2px;
-  text-align: center;
-  color: var(--forest-deep);
-  font-size: 1.2rem;
-}
+/* --- tabulka změn --- */
 
 .news-sub {
-  margin: 0 0 12px;
+  margin: -8px 0 14px;
   text-align: center;
   color: var(--ink-soft);
   font-weight: 600;
@@ -764,8 +752,9 @@ footer {
 
 .news-table {
   width: 100%;
-  margin: 0 0 6px;
+  margin: 0;
   box-shadow: none;
+  border: 1px solid #e3ede4;
   border-radius: 12px;
   font-size: 0.92rem;
 }
@@ -804,11 +793,12 @@ footer {
 }
 
 @media (max-width: 900px) {
-  .winners-layout { grid-template-columns: 1fr; }
+  .info-row { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 600px) {
-  .winners-section { margin: 30px 12px 110px; padding: 22px 12px 14px; }
+  .info-row { margin: 30px 12px 110px; gap: 18px; }
+  .panel { padding: 22px 12px 14px; }
 }
 
 @media (max-width: 480px) {
