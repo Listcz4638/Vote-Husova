@@ -837,3 +837,20 @@ footer {
   color: var(--ink-soft);
   font-weight: 600;
 }
+
+/* ===== PRÁZDNÝ STAV (žádní soutěžící / nevybraná kategorie) ===== */
+
+.empty-note {
+  grid-column: 1 / -1; /* přes celou šířku mřížky, ne jen první sloupec */
+  margin: 10px auto;
+  padding: 28px 20px;
+  max-width: 520px;
+  width: 100%;
+  background: rgba(255,255,255,0.95);
+  border-radius: 16px;
+  box-shadow: 0 10px 22px -12px rgba(27,94,32,0.25);
+  border: 1px solid rgba(27,94,32,0.06);
+  text-align: center;
+  font-weight: 700;
+  color: var(--ink-soft);
+}

@@ -123,6 +123,10 @@ function pickWinner(resultsObj) {
 
 function renderTable(tbodyEl, entries) {
   tbodyEl.innerHTML = "";
+  if (!entries.length) {
+    tbodyEl.innerHTML = `<tr><td colspan="2" style="text-align:center; opacity:.7;">Zatím žádní soutěžící</td></tr>`;
+    return;
+  }
   for (const [name, count] of entries) {
     const tr = document.createElement("tr");
     tr.innerHTML = `<td>${name}</td><td>${count}</td>`;
